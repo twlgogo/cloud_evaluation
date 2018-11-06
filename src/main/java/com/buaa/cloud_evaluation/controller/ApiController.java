@@ -1,23 +1,27 @@
 package com.buaa.cloud_evaluation.controller;
 
+import com.buaa.cloud_evaluation.model.ApiResultModule;
 import com.buaa.cloud_evaluation.model.NodeModel;
 import com.buaa.cloud_evaluation.model.RelationNodeModel;
 import com.buaa.cloud_evaluation.service.ApiService;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@CrossOrigin
 @RestController
 public class ApiController {
 
   private final ApiService service;
-  private final RelationNodeModel root;
+  private RelationNodeModel root;
 
   @Autowired
   public ApiController(ApiService service) {
@@ -45,16 +49,12 @@ public class ApiController {
     if (roots.size() != 1) return null;
     checkNode(roots.get(0));
 
-    RelationNodeModel root = new RelationNodeModel();
-    root.setNode(roots.get(0));
-    root.setChildren(new ArrayList<>());
-
+    RelationNodeModel root = roots.get(0).wrap();
     Queue<RelationNodeModel> queue = new LinkedList<>();
     queue.offer(root);
 
-    for (;;) {
+    while (!queue.isEmpty()) {
       RelationNodeModel rNode = queue.poll();
-      if (rNode == null) break;
 
       List<NodeModel> childNodes = pickNodesByParent(nodes, rNode.getNode().getId());
       childNodes.forEach(this::checkNode);
@@ -63,9 +63,7 @@ public class ApiController {
       }
 
       childNodes.forEach(n -> {
-        RelationNodeModel r = new RelationNodeModel();
-        r.setNode(n);
-        r.setChildren(new ArrayList<>());
+        RelationNodeModel r = n.wrap();
         rNode.getChildren().add(r);
         queue.offer(r);
       });
@@ -91,16 +89,76 @@ public class ApiController {
   }
 
   @RequestMapping("/get_tree")
-  public RelationNodeModel getTree() {
-    return root;
+  public ApiResultModule<RelationNodeModel> getTree() {
+    return ApiResultModule.success(root);
   }
 
   @RequestMapping("/add_node")
-  public NodeModel addNode(
+  public ApiResultModule<NodeModel> addNode(
       @Param("name") String name,
       @Param("type") int type,
       @Param("parent") int parent
   ) {
-    return service.addNode(name, type, parent);
+    // Checks the validity of the parent
+    RelationNodeModel parentRNode = null;
+    if (parent == 0) {
+      // Add a root
+      RelationNodeModel root = findNodeByParent(parent);
+      if (root != null) {
+        return ApiResultModule.error("There already be a root");
+      }
+    } else {
+      parentRNode = findNodeById(parent);
+      if (parentRNode == null) {
+        return ApiResultModule.error("Can't find node with id: " + parent);
+      }
+      if (parentRNode.getNode().getType() == NodeModel.TYPE_CRITERIA) {
+        return ApiResultModule.error("Criteria node can't be a parent");
+      }
+    }
+
+    NodeModel node = service.addNode(name, type, parent);
+
+    // Maintains tree
+    RelationNodeModel rNode = node.wrap();
+    if (parentRNode != null) {
+      parentRNode.getChildren().add(rNode);
+    } else {
+      root = rNode;
+    }
+
+    return ApiResultModule.success(node);
+  }
+
+  @Nullable
+  private RelationNodeModel findNodeById(int id) {
+    return findNode(rn -> rn.getNode().getId() == id);
+  }
+
+  @Nullable
+  private RelationNodeModel findNodeByParent(int parent) {
+    return findNode(rn -> rn.getNode().getParent() == parent);
+  }
+
+  @Nullable
+  private RelationNodeModel findNode(Predicate<? super RelationNodeModel> predicate) {
+    if (root == null) return null;
+
+    Queue<RelationNodeModel> queue = new LinkedList<>();
+    queue.offer(root);
+
+    while (!queue.isEmpty()) {
+      RelationNodeModel rNode = queue.poll();
+
+      if (predicate.test(rNode)) {
+        return rNode;
+      }
+
+      for (RelationNodeModel child : rNode.getChildren()) {
+        queue.offer(child);
+      }
+    }
+
+    return null;
   }
 }
