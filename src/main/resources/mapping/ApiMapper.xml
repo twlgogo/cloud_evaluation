@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.buaa.cloud_evaluation.mapper.ApiMapper">
+
+    <resultMap id="NodeResultMap" type="com.buaa.cloud_evaluation.model.NodeModel">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="history_values" property="historyValues" jdbcType="VARCHAR"/>
+        <result column="current_value" property="currentValue" jdbcType="INTEGER"/>
+        <result column="source" property="source" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="selectNode" resultMap="NodeResultMap">
+        select * from nodes entry
+        <where>
+            entry.id = #{id}
+        </where>
+    </select>
+
+    <insert id="insertNode" useGeneratedKeys="true" keyProperty="node.id" keyColumn="id">
+        insert into nodes (name, type, parent)
+        values (#{node.name}, #{node.type}, #{node.parent})
+    </insert>
+
+</mapper>

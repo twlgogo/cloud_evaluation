@@ -23,9 +23,11 @@ public class DatabaseGenerator {
       statement.executeUpdate("create table nodes ("
           + "id integer primary key autoincrement,"
           + "name text,"
+          + "type integer,"
           + "parent integer," // 0 if it's root
-          + "value integer,"
-          + "source integer"
+          + "history_values text," // nullable
+          + "current_value integer," // nullable
+          + "source integer" // nullable
           + ")");
 
       statement.executeUpdate("create table node_values ("
