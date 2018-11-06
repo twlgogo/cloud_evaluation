@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.buaa.cloud_evaluation.mapper.IndexMapper">
+
+    <resultMap id="IndexResultMap" type="com.buaa.cloud_evaluation.model.IndexModel">
+        <id column="index_id" property="indexId" jdbcType="INTEGER"/>
+        <result column="index_name" property="indexName" jdbcType="VARCHAR"/>
+        <result column="index_score" property="indexScore" jdbcType="VARCHAR"/>
+        <result column="index_parent" property="indexParent" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="findIndexById" resultMap="IndexResultMap" parameterType="INTEGER">
+        select * from index_db i
+        <where>
+            i.index_id = #{indexId}
+        </where>
+    </select>
+
+    <insert id="insertByNameAndParent" >
+        insert into index_db (index_name,index_parent)
+        values (#{indexName},#{indexParent})
+    </insert>
+
+</mapper>
