@@ -8,15 +8,15 @@ import java.sql.Statement;
 
 public class DatabaseGenerator {
 
-  public static void main(String[] arg) {
-    File dbFile = new File("src/main/resources/db/cloud_evaluate.db");
+  public static void generate(String path) {
+    File dbFile = new File(path);
     if (dbFile.exists()) {
       return;
     }
 
     Connection connection = null;
     try {
-      connection = DriverManager.getConnection("jdbc:sqlite:src/main/resources/db/cloud_evaluate.db");
+      connection = DriverManager.getConnection("jdbc:sqlite:" + path);
       Statement statement = connection.createStatement();
       statement.setQueryTimeout(30);
 
