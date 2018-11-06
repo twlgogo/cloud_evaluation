@@ -19,9 +19,17 @@
         </where>
     </select>
 
+    <select id="selectNodes" resultMap="NodeResultMap">
+        select * from nodes order by id
+    </select>
+
     <insert id="insertNode" useGeneratedKeys="true" keyProperty="node.id" keyColumn="id">
         insert into nodes (name, type, parent)
         values (#{node.name}, #{node.type}, #{node.parent})
     </insert>
+
+    <delete id="deleteNodes">
+        delete from nodes
+    </delete>
 
 </mapper>
