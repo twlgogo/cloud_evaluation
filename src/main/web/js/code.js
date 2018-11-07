@@ -164,33 +164,37 @@ function hideInfoPanel() {
 
 function fillInfoPanelWithRNode(rNode) {
   const node = rNode.node;
-  const nameValue = document.getElementById('info-node-name-value');
-  nameValue.value = node.name;
 
-  const typeValue = document.getElementById('info-node-type-value');
-  typeValue.value = node.type.toString();
+  // Info Node
 
-  const sourceValue = document.getElementById('info-node-source-value');
+  const nodeNameValue = document.getElementById('info-node-name-value');
+  nodeNameValue.value = node.name;
+
+  const nodeTypeValue = document.getElementById('info-node-type-value');
+  nodeTypeValue.value = node.type.toString();
+
+  const nodeSource = document.getElementById('info-node-source');
+  nodeSource.style.display = node.type === TYPE_CRITERIA ? 'block' : 'none';
+  const nodeSourceValue = document.getElementById('info-node-source-value');
   if (node.type === 1 && node.source != null) {
-    sourceValue.value = node.source.toString();
+    nodeSourceValue.value = node.source.toString();
   }
+
+  const nodeApply = document.getElementById('info-node-apply');
+  nodeApply.onclick = async function () {
+    const id = node.id;
+    const name = nodeNameValue.value;
+    const type = parseInt(nodeTypeValue.value);
+    const source = type === TYPE_ELEMENT ? INVALID_SOURCE : parseInt(nodeSourceValue.value);
+    // TODO check name, type and source
+    rNode.node = await updateNode(id, name, type, source)
+    await refreshRenderPanel();
+  }
+
+  // Add child
 
   const addChild = document.getElementById('info-add-child');
   addChild.style.display = node.type === TYPE_ELEMENT ? 'block' : 'none';
-
-  const apply = document.getElementById('info-node-apply');
-  apply.onclick = async function () {
-    const id = node.id;
-    const name = nameValue.value;
-    const type = parseInt(typeValue.value);
-    const source = type === TYPE_ELEMENT ? INVALID_SOURCE : parseInt(sourceValue.value);
-
-    // TODO check name, type and source
-
-    rNode.node = await updateNode(id, name, type, source)
-
-    await refreshRenderPanel();
-  }
 }
 
 function setupInfoPanel() {
