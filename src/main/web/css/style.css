@@ -26,3 +26,22 @@
   border: 1px solid #888;
   width: 80%;
 }
+
+.matrix-container {
+  display: grid;
+  background-color: #2196F3;
+  padding: 10px;
+}
+
+.matrix-item {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  padding: 5px;
+  text-align: center;
+}
+
+
+.grid-two {
+  display: grid;
+  grid-template-columns: 50% 50%;
+}

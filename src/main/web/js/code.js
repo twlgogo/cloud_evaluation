@@ -12,6 +12,14 @@ function url(path) {
   return "http://127.0.0.1:8080" + path;
 }
 
+function reciprocal(num) {
+  if (parseFloat(num) === 1) {
+    return "1";
+  } else {
+    return (1 / parseFloat(num)).toString();
+  }
+}
+
 function nodeId(id) {
   return `n${id}`
 }
@@ -244,6 +252,130 @@ function fillInfoPanelWithRNode(rNode) {
     await refreshRenderPanel();
     cy.$(`#${nodeId(node.id)}`).emit("click");
   }
+
+  // Matrix
+  const matrix = document.getElementById('info-matrix');
+  const showMatrix = node.type === TYPE_ELEMENT && rNode.children.length > 1;
+  matrix.style.display = showMatrix ? 'block' : 'none';
+  if (showMatrix) {
+    // Current vector
+    const currentVector = (node.currentValue != null && node.currentValue.vector != null) ? node.currentValue.vector : null;
+    document.getElementById('info-matrix-current-vector').textContent = createVectorText(currentVector);
+
+    // New matrix
+    const newMatrixContainer = document.getElementById('info-matrix-new-matrix-container');
+    while (newMatrixContainer.firstChild) {
+      newMatrixContainer.removeChild(newMatrixContainer.firstChild);
+    }
+    newMatrixContainer.appendChild(createMatrixDiv(rNode.children.length, null));
+
+    // Matrix history
+    const historyContainer = document.getElementById('info-matrix-history');
+    while (historyContainer.firstChild) {
+      historyContainer.removeChild(historyContainer.firstChild);
+    }
+    node.historyValues.forEach((child) => {
+      historyContainer.appendChild(createHistoryEntryDiv(child))
+    })
+  }
+}
+
+function createMatrixDiv(n, list) {
+  if (n < 2 || (list != null && n * (n - 1) / 2 !== list.length)) {
+    return null;
+  }
+
+  const div = document.createElement("div");
+  div.className = 'matrix-container';
+  div.style['grid-template-columns'] = 'auto '.repeat(n).slice(0, -1);
+
+  const texts = {};
+
+  let index = 0;
+  for (let i = 0; i < n; i++) {
+    texts[`${i}-${i}`] = "1";
+    for (let j = i + 1; j < n; j++) {
+      if (list != null) {
+        texts[`${i}-${j}`] = list[index].toString();
+        texts[`${j}-${i}`] = reciprocal(list[index].toString())
+        index++;
+      } else {
+        texts[`${i}-${j}`] = ""
+        texts[`${j}-${i}`] = ""
+      }
+    }
+  }
+
+  const cells = []
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < n; j++) {
+      let cell;
+      if (i >= j) {
+        cell = document.createElement("div");
+        cell.className = 'matrix-item';
+        cell.textContent = texts[`${i}-${j}`];
+      } else {
+        cell = document.createElement("input")
+        cell.className = 'matrix-item';
+        cell.type = "text";
+        cell.value = texts[`${i}-${j}`];
+        const x = i;
+        const y = j;
+        cell.onchange = function () {
+          cells[y * n + x].textContent = reciprocal(cell.value);
+        }
+      }
+      cells[i * n + j] = cell;
+      div.appendChild(cell);
+    }
+  }
+
+  return div;
+}
+
+function createVectorDiv(list) {
+  const div = document.createElement("div");
+  div.textContent = list != null ? list.map(x => x.toString()).join(", ") : "None";
+  return div;
+}
+
+function createVectorText(list) {
+  return list != null ? list.map(x => x.toString()).join(", ") : "None";
+}
+
+function createHistoryEntryDiv(nodeValue) {
+  const div = document.createElement("div");
+
+  const grid = document.createElement("div");
+  grid.className = "grid-two";
+  div.appendChild(grid);
+
+  const matrix = createMatrixDiv(nodeValue.n, nodeValue.matrix);
+  grid.appendChild(matrix);
+
+  const buttons = document.createElement("div");
+  grid.appendChild(buttons);
+
+  const update = document.createElement("input");
+  update.type = "submit";
+  update.value = "Update"
+  update.onclick = function() {
+    // TODO
+  }
+  buttons.appendChild(update);
+
+  const remove = document.createElement("input");
+  remove.type = "submit";
+  remove.value = "Remove"
+  remove.onclick = function() {
+    // TODO
+  }
+  buttons.appendChild(remove);
+
+  const vector = createVectorDiv(nodeValue.vector);
+  div.appendChild(vector);
+
+  return div;
 }
 
 function setupInfoPanel() {
