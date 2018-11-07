@@ -176,8 +176,10 @@ function fillInfoPanelWithRNode(rNode) {
   const nodeSource = document.getElementById('info-node-source');
   nodeSource.style.display = node.type === TYPE_CRITERIA ? 'block' : 'none';
   const nodeSourceValue = document.getElementById('info-node-source-value');
-  if (node.type === 1 && node.source != null) {
+  if (node.type === TYPE_CRITERIA && node.source != null) {
     nodeSourceValue.value = node.source.toString();
+  } else {
+    nodeSourceValue.value = "0";
   }
 
   const nodeChange = document.getElementById('info-node-change');
@@ -187,14 +189,38 @@ function fillInfoPanelWithRNode(rNode) {
     const type = parseInt(nodeTypeValue.value);
     const source = type === TYPE_ELEMENT ? INVALID_SOURCE : parseInt(nodeSourceValue.value);
     // TODO check name, type and source
-    rNode.node = await updateNode(id, name, type, source)
+    await updateNode(id, name, type, source)
     await refreshRenderPanel();
+    cy.$(`#${nodeId(node.id)}`).emit("click");
   }
 
   // Add child
 
   const addChild = document.getElementById('info-add-child');
   addChild.style.display = node.type === TYPE_ELEMENT ? 'block' : 'none';
+
+  const addChildNameValue = document.getElementById('info-add-child-name-value');
+  addChildNameValue.value = "New Child";
+
+  const addChildTypeValue = document.getElementById('info-add-child-type-value');
+  addChildTypeValue.value = TYPE_ELEMENT.toString();
+
+  const addChildSource = document.getElementById('info-add-child-source');
+  addChildSource.style.display = 'none';
+  const addChildSourceValue = document.getElementById('info-add-child-source-value');
+  addChildSourceValue.value = "0";
+
+  const addChildAdd = document.getElementById('info-add-child-add');
+  addChildAdd.onclick = async function () {
+    const name = addChildNameValue.value;
+    const type = parseInt(addChildTypeValue.value);
+    const parent = node.id;
+    const source = type === TYPE_ELEMENT ? INVALID_SOURCE : parseInt(addChildSourceValue.value);
+    // TODO check name, type and source
+    await pushNode(name, type, parent, source);
+    await refreshRenderPanel();
+    cy.$(`#${nodeId(node.id)}`).emit("click");
+  }
 }
 
 function setupInfoPanel() {
