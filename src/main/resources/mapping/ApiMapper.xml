@@ -36,6 +36,11 @@
         where id = #{id}
     </update>
 
+    <delete id="deleteNode">
+        delete from nodes
+        where id = #{id}
+    </delete>
+
     <delete id="deleteNodes">
         delete from nodes
     </delete>

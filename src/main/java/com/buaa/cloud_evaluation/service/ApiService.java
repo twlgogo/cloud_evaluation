@@ -22,6 +22,8 @@ public interface ApiService {
 
   NodeModel updateNode(int id, String name, int type, int source);
 
+  void removeNode(int id);
+
   /**
    * Deletes all nodes and all node values.
    */

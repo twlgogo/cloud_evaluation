@@ -23,5 +23,9 @@ public interface ApiMapper {
       @Param("source") int source
   );
 
+  void deleteNode(
+      @Param("id") int id
+  );
+
   void deleteNodes();
 }

@@ -53,6 +53,17 @@ async function updateNode(id, name, type, source) {
   }
 }
 
+async function removeNode(id) {
+  const response = await fetch(url(`/remove_node?id=${encodeURIComponent(id)}`));
+  const result = await response.json()
+
+  if (result.success) {
+    return result.value;
+  } else {
+    throw result.error;
+  }
+}
+
 /**
  * Add the node and the edge to it's parent, to the screen.
  */
@@ -193,6 +204,17 @@ function fillInfoPanelWithRNode(rNode) {
     await refreshRenderPanel();
     cy.$(`#${nodeId(node.id)}`).emit("click");
   }
+
+  const canBeDeleted = rNode.children.length === 0 && rNode.node.parent !== INVALID_PARENT;
+  const nodeRemove = document.getElementById('info-node-remove');
+  nodeRemove.style.display = canBeDeleted ? 'block' : 'none';
+  nodeRemove.onclick = async function () {
+    if (canBeDeleted) {
+      await removeNode(node.id);
+      await refreshRenderPanel();
+      hideInfoPanel();
+    }
+  };
 
   // Add child
 

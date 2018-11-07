@@ -160,6 +160,32 @@ public class ApiController {
     return ApiResultModule.success(node);
   }
 
+  @RequestMapping("/remove_node")
+  public ApiResultModule<Void> removeNode(
+      @Param("id") int id
+  ) {
+    RelationNodeModel rNode = findNodeById(id);
+    if (rNode == null) {
+      return ApiResultModule.error("Can't find node with the id");
+    }
+    if (!rNode.getChildren().isEmpty()) {
+      return ApiResultModule.error("Can't remove node with any child");
+    }
+    if (rNode.getNode().getParent() == NodeModel.INVALID_PARENT) {
+      return ApiResultModule.error("Can't remove root node");
+    }
+    RelationNodeModel parentRNode = findNodeById(rNode.getNode().getParent());
+    if (parentRNode == null) {
+      return ApiResultModule.error("Can't find parent node, It's an internal error");
+    }
+
+    service.removeNode(id);
+
+    parentRNode.getChildren().removeIf(n -> n.getNode().getId() == id);
+
+    return ApiResultModule.success(null);
+  }
+
   @Nullable
   private RelationNodeModel findNodeById(int id) {
     return findNode(rn -> rn.getNode().getId() == id);
