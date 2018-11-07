@@ -20,6 +20,8 @@ public interface ApiService {
    */
   NodeModel addNode(String name, int type, int parent);
 
+  NodeModel updateNode(int id, String name, int type, int source);
+
   /**
    * Deletes all nodes and all node values.
    */

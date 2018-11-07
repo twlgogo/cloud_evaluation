@@ -130,6 +130,30 @@ public class ApiController {
     return ApiResultModule.success(node);
   }
 
+  @RequestMapping("/update_node")
+  public ApiResultModule<NodeModel> addNode(
+      @Param("id") int id,
+      @Param("name") String name,
+      @Param("type") int type,
+      @Param("source") int source
+  ) {
+    RelationNodeModel rNode = findNodeById(id);
+    if (rNode == null) {
+      return ApiResultModule.error("Can't find node with the id");
+    }
+    if (type == NodeModel.TYPE_CRITERIA && !rNode.getChildren().isEmpty()) {
+      return ApiResultModule.error("Can't find node with the id");
+    }
+    if (type == NodeModel.TYPE_ELEMENT && source != NodeModel.INVALID_SOURCE) {
+      return ApiResultModule.error("Element doesn't support source");
+    }
+
+    NodeModel node = service.updateNode(id, name, type, source);
+    rNode.setNode(node);
+
+    return ApiResultModule.success(node);
+  }
+
   @Nullable
   private RelationNodeModel findNodeById(int id) {
     return findNode(rn -> rn.getNode().getId() == id);

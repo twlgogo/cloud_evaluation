@@ -22,4 +22,7 @@ public class NodeModel {
 
   public static final int TYPE_ELEMENT = 0;
   public static final int TYPE_CRITERIA = 1;
+
+  public static final int INVALID_PARENT = -1;
+  public static final int INVALID_SOURCE = -1;
 }

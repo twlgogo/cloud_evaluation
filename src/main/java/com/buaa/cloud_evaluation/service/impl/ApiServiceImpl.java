@@ -34,6 +34,12 @@ public class ApiServiceImpl implements ApiService {
   }
 
   @Override
+  public NodeModel updateNode(int id, String name, int type, int source) {
+    mapper.updateNode(id, name, type, source);
+    return mapper.selectNode(id);
+  }
+
+  @Override
   public void deleteAll() {
     mapper.deleteNodes();
     // TODO delete node values

@@ -28,6 +28,14 @@
         values (#{node.name}, #{node.type}, #{node.parent})
     </insert>
 
+    <update id="updateNode">
+        update nodes
+        set name = #{name},
+            type = #{type},
+            source = #{source}
+        where id = #{id}
+    </update>
+
     <delete id="deleteNodes">
         delete from nodes
     </delete>

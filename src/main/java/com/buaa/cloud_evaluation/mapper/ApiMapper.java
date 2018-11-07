@@ -16,5 +16,12 @@ public interface ApiMapper {
       @Param("node") NodeModel node
   );
 
+  void updateNode(
+      @Param("id") int id,
+      @Param("name") String name,
+      @Param("type") int type,
+      @Param("source") int source
+  );
+
   void deleteNodes();
 }
