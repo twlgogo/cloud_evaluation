@@ -182,6 +182,9 @@ public class ApiController {
     service.removeNode(id);
 
     parentRNode.getChildren().removeIf(n -> n.getNode().getId() == id);
+    parentRNode.getNode().setHistoryValueIds("0");
+    parentRNode.getNode().setCurrentValueId(-1);
+    parentRNode.getNode().fillNodeValues(service);
 
     return ApiResultModule.success(null);
   }
