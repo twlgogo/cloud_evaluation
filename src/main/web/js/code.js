@@ -1,6 +1,9 @@
 const TYPE_ELEMENT = 0;
 const TYPE_CRITERIA = 1;
 
+const INVALID_PARENT = -1;
+const INVALID_SOURCE = -1;
+
 
 const cy = installCytoscape()
 
@@ -66,7 +69,7 @@ function addNode(cy, rNode) {
     fillInfoPanelWithRNode(rNode)
   });
 
-  if (node.parent !== 0) {
+  if (node.parent !== INVALID_PARENT) {
     cy.add({
       group: "edges",
       data: { id: edgeId(node.parent, node.id), source: nodeId(node.parent), target: nodeId(node.id) },
@@ -136,7 +139,7 @@ async function refreshRenderPanel() {
   let tree = await pullTree()
   if (tree == null) {
     // No root, add a root
-    await pushNode("root", 0, 0)
+    await pushNode("root", TYPE_ELEMENT, INVALID_PARENT)
     tree = await pullTree()
   }
 
@@ -173,14 +176,14 @@ function fillInfoPanelWithRNode(rNode) {
   }
 
   const addChild = document.getElementById('info-add-child');
-  addChild.style.display = node.type === 0 ? 'block' : 'none';
+  addChild.style.display = node.type === TYPE_ELEMENT ? 'block' : 'none';
 
   const apply = document.getElementById('info-node-apply');
   apply.onclick = async function () {
     const id = node.id;
     const name = nameValue.value;
     const type = parseInt(typeValue.value);
-    const source = type === 0 ? -1 : parseInt(sourceValue.value);
+    const source = type === TYPE_ELEMENT ? INVALID_SOURCE : parseInt(sourceValue.value);
 
     // TODO check name, type and source
 
@@ -202,14 +205,14 @@ function setupInfoPanel() {
   const nodeSource = document.getElementById('info-node-source');
   nodeSource.style.display = 'none';
   document.getElementById('info-node-type-value').onchange = function (event) {
-    nodeSource.style.display = event.target.value === "1" ? 'block' : 'none';
+    nodeSource.style.display = event.target.value === TYPE_CRITERIA.toString() ? 'block' : 'none';
   }
 
   // Only show source-selector if the type is 1
   const addChildSource = document.getElementById('info-add-child-source');
   addChildSource.style.display = 'none';
   document.getElementById('info-add-child-type-value').onchange = function (event) {
-    addChildSource.style.display = event.target.value === "1" ? 'block' : 'none';
+    addChildSource.style.display = event.target.value === TYPE_CRITERIA.toString() ? 'block' : 'none';
   }
 }
 
