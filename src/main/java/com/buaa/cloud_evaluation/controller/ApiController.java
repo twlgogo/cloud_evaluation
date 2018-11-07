@@ -53,7 +53,9 @@ public class ApiController {
     // Find root node
     List<NodeModel> roots = pickNodesByParent(nodes, NodeModel.INVALID_PARENT);
     // Only one root node is supported
-    if (roots.size() != 1) return null;
+    if (roots.size() != 1) {
+      throw new IllegalStateException("Find more than one root");
+    }
     checkNode(roots.get(0));
 
     RelationNodeModel root = roots.get(0).wrap();
