@@ -2,7 +2,7 @@ package com.buaa.cloud_evaluation.ahp;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class AHPCacluator {
@@ -37,7 +37,13 @@ public class AHPCacluator {
   }
 
   public static AHPResult fixAHPWeight(List<AHPRequest> historyAHPRequests) {
-    return null;
+    // FIXME placeholder
+    int n = historyAHPRequests.get(0).getN();
+    AHPResult result = new AHPResult();
+    result.setFitCI(true);
+    result.setN(n);
+    result.setResList(Collections.nCopies(n, 1.0 / n));
+    return result;
   }
 
   private static double[][] getAHPMatrix (List<Double> list, int N) {
