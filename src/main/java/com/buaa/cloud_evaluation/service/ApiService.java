@@ -1,31 +1,43 @@
 package com.buaa.cloud_evaluation.service;
 
 import com.buaa.cloud_evaluation.model.NodeModel;
+import com.buaa.cloud_evaluation.model.NodeValueModel;
 import java.util.List;
 
 public interface ApiService {
 
   /**
-   * Returns the node with the id
+   * Returns the node with the id from database.
    */
   NodeModel getNode(int id);
 
   /**
-   * Returns all nodes order by id.
+   * Returns all nodes order by id from database.
    */
   List<NodeModel> getAllNodes();
 
   /**
-   * Creates a node with the name, the type and the parent.
+   * Creates a node with the name, the type and the parent into database.
    */
   NodeModel addNode(String name, int type, int parent, int source);
 
+  /**
+   * Returns the node with the id from database.
+   */
   NodeModel updateNode(int id, String name, int type, int source);
 
+  /**
+   * Removes the node with the id from database.
+   */
   void removeNode(int id);
 
   /**
-   * Deletes all nodes and all node values.
+   * Returns the node with the id from database.
+   */
+  NodeValueModel getNodeValue(int id);
+
+  /**
+   * Deletes all nodes and all node values from database.
    */
   void deleteAll();
 }

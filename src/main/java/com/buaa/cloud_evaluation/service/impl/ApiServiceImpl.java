@@ -2,6 +2,7 @@ package com.buaa.cloud_evaluation.service.impl;
 
 import com.buaa.cloud_evaluation.mapper.ApiMapper;
 import com.buaa.cloud_evaluation.model.NodeModel;
+import com.buaa.cloud_evaluation.model.NodeValueModel;
 import com.buaa.cloud_evaluation.service.ApiService;
 import java.util.List;
 import javax.annotation.Resource;
@@ -15,12 +16,16 @@ public class ApiServiceImpl implements ApiService {
 
   @Override
   public NodeModel getNode(int id) {
-    return mapper.selectNode(id);
+    NodeModel node = mapper.selectNode(id);
+    node.fillNodeValues(this);
+    return node;
   }
 
   @Override
   public List<NodeModel> getAllNodes() {
-    return mapper.selectNodes();
+    List<NodeModel> nodes = mapper.selectNodes();
+    nodes.forEach(n -> n.fillNodeValues(this));
+    return nodes;
   }
 
   @Override
@@ -29,20 +34,27 @@ public class ApiServiceImpl implements ApiService {
     node.setName(name);
     node.setType(type);
     node.setParent(parent);
+    node.setCurrentValueId(NodeValueModel.INVALID_VALUE_ID);
+    node.setHistoryValueIds("0");
     node.setSource(source);
     mapper.insertNode(node);
-    return mapper.selectNode(node.getId());
+    return getNode(node.getId());
   }
 
   @Override
   public NodeModel updateNode(int id, String name, int type, int source) {
     mapper.updateNode(id, name, type, source);
-    return mapper.selectNode(id);
+    return getNode(id);
   }
 
   @Override
   public void removeNode(int id) {
     mapper.deleteNode(id);
+  }
+
+  @Override
+  public NodeValueModel getNodeValue(int id) {
+    return mapper.selectNodeValue(id);
   }
 
   @Override

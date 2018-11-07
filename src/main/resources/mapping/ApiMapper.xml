@@ -12,6 +12,13 @@
         <result column="source" property="source" jdbcType="INTEGER"/>
     </resultMap>
 
+    <resultMap id="NodeValueResultMap" type="com.buaa.cloud_evaluation.model.NodeValueModel">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <id column="n" property="n" jdbcType="INTEGER"/>
+        <id column="matrix_str" property="matrixStr" jdbcType="VARCHAR"/>
+        <id column="vector_str" property="vectorStr" jdbcType="VARCHAR"/>
+    </resultMap>
+
     <select id="selectNode" resultMap="NodeResultMap">
         select * from nodes entry
         <where>
@@ -44,5 +51,10 @@
     <delete id="deleteNodes">
         delete from nodes
     </delete>
+
+    <select id="selectNodeValue" resultMap="NodeValueResultMap">
+        select * from node_values
+        where id = #{id}
+    </select>
 
 </mapper>

@@ -1,6 +1,7 @@
 package com.buaa.cloud_evaluation.mapper;
 
 import com.buaa.cloud_evaluation.model.NodeModel;
+import com.buaa.cloud_evaluation.model.NodeValueModel;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
@@ -28,4 +29,8 @@ public interface ApiMapper {
   );
 
   void deleteNodes();
+
+  NodeValueModel selectNodeValue(
+      @Param("id") int id
+  );
 }
