@@ -83,6 +83,16 @@ async function pushNodeValue(nodeId, matrix) {
   }
 }
 
+async function removeNodeValue(nodeId, nodeValueId) {
+  const response = await fetch(url(`/remove_node_value?nodeId=${encodeURIComponent(nodeId)}&nodeValueId=${encodeURIComponent(nodeValueId)}`));
+  const result = await response.json()
+
+  if (result.success) {
+    return result.value;
+  } else {
+    throw result.error;
+  }
+}
 
 /**
  * Add the node and the edge to it's parent, to the screen.
@@ -300,7 +310,7 @@ function fillInfoPanelWithRNode(rNode) {
       historyContainer.removeChild(historyContainer.firstChild);
     }
     node.historyValues.reverse().forEach((child) => {
-      historyContainer.appendChild(createHistoryEntryDiv(child))
+      historyContainer.appendChild(createHistoryEntryDiv(node, child))
     })
   }
 }
@@ -391,7 +401,7 @@ function createVectorText(list) {
   return list != null ? list.map(x => x.toString()).join(", ") : "None";
 }
 
-function createHistoryEntryDiv(nodeValue) {
+function createHistoryEntryDiv(node, nodeValue) {
   const div = document.createElement("div");
 
   const grid = document.createElement("div");
@@ -415,8 +425,10 @@ function createHistoryEntryDiv(nodeValue) {
   const remove = document.createElement("input");
   remove.type = "submit";
   remove.value = "Remove"
-  remove.onclick = function() {
-    // TODO
+  remove.onclick = async function() {
+    await removeNodeValue(node.id, nodeValue.id)
+    await refreshRenderPanel();
+    cy.$(`#${nodeId(node.id)}`).emit("click");
   }
   buttons.appendChild(remove);
 
