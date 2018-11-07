@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cloud Evaluation</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+  <link href="css/style.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.2.19/cytoscape.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dagre/0.8.2/dagre.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.2.2/cytoscape-dagre.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/cytoscape-cxtmenu@3.0.2/cytoscape-cxtmenu.min.js"></script>
+</head>
+<body>
+<div id="render-panel"></div>
+<div id="info-panel" class="modal">
+  <div class="modal-content">
+    <div id="info-node">
+      <div id="info-node-name">
+        Name:
+        <input id="info-node-name-value" type="text" title="Name">
+      </div>
+      <div id="info-node-type">
+        Type:
+        <select id="info-node-type-value" title="Type">
+          <option value="0">度量元</option>
+          <option value="1">子准则</option>
+        </select>
+      </div>
+      <div id="info-node-source">
+        Source:
+        <select id="info-node-source-value" title="Source">
+          <option value="0">CPU temperature</option>
+          <option value="1">GPU temperature</option>
+        </select>
+      </div>
+      <input id="info-node-apply" type="submit" value="Change">
+    </div>
+    <hr>
+    <div id="info-add-child">
+      <p>Add a child</p>
+      <div id="info-add-child-name">
+        Name:
+        <input id="info-add-child-name-value" type="text" title="Name">
+      </div>
+      <div id="info-add-child-type">
+        Type:
+        <select id="info-add-child-type-value" title="Type">
+          <option value="0">度量元</option>
+          <option value="1">子准则</option>
+        </select>
+      </div>
+      <div id="info-add-child-source">
+        Source:
+        <select id="info-add-child-source-value" title="Source">
+          <option value="0">CPU temperature</option>
+          <option value="1">GPU temperature</option>
+        </select>
+      </div>
+      <input type="submit" value="Add">
+      <p id="info-add-child-error"></p>
+    </div>
+  </div>
+</div>
+<script defer src="js/code.js"></script>
+</body>
+</html>
