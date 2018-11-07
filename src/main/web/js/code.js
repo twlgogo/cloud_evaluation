@@ -183,6 +183,7 @@ function fillInfoPanelWithRNode(rNode) {
 
   const nodeTypeValue = document.getElementById('info-node-type-value');
   nodeTypeValue.value = node.type.toString();
+  document.getElementById('info-node-type-value-criteria').style.display = rNode.children.length === 0 ? 'block' : 'none';
 
   const nodeSource = document.getElementById('info-node-source');
   nodeSource.style.display = node.type === TYPE_CRITERIA ? 'block' : 'none';
