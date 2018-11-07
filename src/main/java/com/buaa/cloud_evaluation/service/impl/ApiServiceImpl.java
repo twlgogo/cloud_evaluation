@@ -30,7 +30,7 @@ public class ApiServiceImpl implements ApiService {
     node.setType(type);
     node.setParent(parent);
     mapper.insertNode(node);
-    return node;
+    return mapper.selectNode(node.getId());
   }
 
   @Override
