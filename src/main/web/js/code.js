@@ -180,8 +180,8 @@ function fillInfoPanelWithRNode(rNode) {
     nodeSourceValue.value = node.source.toString();
   }
 
-  const nodeApply = document.getElementById('info-node-apply');
-  nodeApply.onclick = async function () {
+  const nodeChange = document.getElementById('info-node-change');
+  nodeChange.onclick = async function () {
     const id = node.id;
     const name = nodeNameValue.value;
     const type = parseInt(nodeTypeValue.value);
