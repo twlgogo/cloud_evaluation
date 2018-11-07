@@ -70,6 +70,11 @@ public class ApiServiceImpl implements ApiService {
   }
 
   @Override
+  public void removeNodeValue(int id) {
+    mapper.deleteNodeValue(id);
+  }
+
+  @Override
   public void deleteAll() {
     mapper.deleteNodes();
     // TODO delete node values

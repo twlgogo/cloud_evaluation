@@ -69,4 +69,9 @@
         values (#{nodeValue.n}, #{nodeValue.matrixStr}, #{nodeValue.vectorStr})
     </insert>
 
+    <delete id="deleteNodeValue">
+        delete from node_values
+        where id = #{id}
+    </delete>
+
 </mapper>

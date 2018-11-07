@@ -43,4 +43,8 @@ public interface ApiMapper {
   void insertNodeValue(
       @Param("nodeValue") NodeValueModel nodeValue
   );
+
+  void deleteNodeValue(
+      @Param("id") int id
+  );
 }

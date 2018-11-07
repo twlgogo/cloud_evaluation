@@ -46,7 +46,7 @@ public interface ApiService {
   /**
    * Returns the node value with the id from database.
    */
-  //void removeNodeValue(int id);
+  void removeNodeValue(int id);
 
   /**
    * Deletes all nodes and all node values from database.

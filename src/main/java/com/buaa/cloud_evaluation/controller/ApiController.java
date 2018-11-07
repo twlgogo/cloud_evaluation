@@ -10,6 +10,7 @@ import com.buaa.cloud_evaluation.model.RelationNodeModel;
 import com.buaa.cloud_evaluation.service.ApiService;
 import com.buaa.cloud_evaluation.util.Serialization;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -186,9 +187,14 @@ public class ApiController {
 
     service.removeNode(id);
 
+    // Remove it's history values and current value
+    Serialization.stringToIntList(parentRNode.getNode().getHistoryValueIds()).forEach(service::removeNodeValue);
+    if (parentRNode.getNode().getCurrentValueId() != NodeValueModel.INVALID_VALUE_ID) {
+      service.removeNodeValue(parentRNode.getNode().getCurrentValueId());
+    }
     parentRNode.getChildren().removeIf(n -> n.getNode().getId() == id);
-    parentRNode.getNode().setHistoryValueIds("0");
-    parentRNode.getNode().setCurrentValueId(-1);
+    parentRNode.getNode().setHistoryValueIds(Serialization.intListToString(Collections.emptyList()));
+    parentRNode.getNode().setCurrentValueId(NodeValueModel.INVALID_VALUE_ID);
     parentRNode.getNode().fillNodeValues(service);
 
     return ApiResultModule.success(null);
