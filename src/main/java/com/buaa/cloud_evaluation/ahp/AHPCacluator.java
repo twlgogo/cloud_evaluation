@@ -40,9 +40,7 @@ public class AHPCacluator {
     return null;
   }
 
-
-
-  private static double[][] getAHPMatrix (List<Integer> list, int N) {
+  private static double[][] getAHPMatrix (List<Double> list, int N) {
     double[][] resMatirx = new double[N][N];
     int index = 0;
     for (int i = 0; i < N; i++) {
@@ -133,10 +131,10 @@ public class AHPCacluator {
 
   public static void main(String[] args) {
     AHPRequest ahpRequest = new AHPRequest();
-    List<Integer> list = new ArrayList<>();
-    list.add(3);
-    list.add(5);
-    list.add(2);
+    List<Double> list = new ArrayList<>();
+    list.add(3.0);
+    list.add(5.0);
+    list.add(2.0);
     ahpRequest.setList(list);
     ahpRequest.setN(3);
     AHPResult ahpResult = getAHPResult(ahpRequest);

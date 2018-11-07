@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 public class AHPRequest {
   private int n; // matrix n;
-  private List<Integer> list;
+  private List<Double> list;
 }
