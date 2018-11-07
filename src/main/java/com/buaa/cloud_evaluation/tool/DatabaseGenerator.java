@@ -36,12 +36,12 @@ public class DatabaseGenerator {
           + "vector string" // nullable
           + ")");
 
-      statement.executeUpdate("insert into nodes (name, type, parent) values('root', 0, 0)");
-      statement.executeUpdate("insert into nodes (name, type, parent) values('child1', 0, 1)");
-      statement.executeUpdate("insert into nodes (name, type, parent) values('child2', 0, 1)");
-      statement.executeUpdate("insert into nodes (name, type, parent) values('child11', 0, 2)");
-      statement.executeUpdate("insert into nodes (name, type, parent) values('child12', 0, 2)");
-      statement.executeUpdate("insert into nodes (name, type, parent) values('child2', 0, 3)");
+      statement.executeUpdate("insert into nodes (name, type, parent, source) values('root', 0, -1, -1)");
+      statement.executeUpdate("insert into nodes (name, type, parent, source) values('child1', 0, 1, -1)");
+      statement.executeUpdate("insert into nodes (name, type, parent, source) values('child2', 0, 1, -1)");
+      statement.executeUpdate("insert into nodes (name, type, parent, source) values('child11', 1, 2, 0)");
+      statement.executeUpdate("insert into nodes (name, type, parent, source) values('child12', 1, 2, 1)");
+      statement.executeUpdate("insert into nodes (name, type, parent, source) values('child2', 1, 3, 0)");
 
     } catch(SQLException e) {
       e.printStackTrace();

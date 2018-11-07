@@ -45,7 +45,8 @@ public class ApiController {
     List<NodeModel> nodes = service.getAllNodes();
 
     // Find root node
-    List<NodeModel> roots = pickNodesByParent(nodes, 0);
+    List<NodeModel> roots = pickNodesByParent(nodes, NodeModel.INVALID_PARENT);
+    // Only one root node is supported
     if (roots.size() != 1) return null;
     checkNode(roots.get(0));
 
@@ -58,8 +59,8 @@ public class ApiController {
 
       List<NodeModel> childNodes = pickNodesByParent(nodes, rNode.getNode().getId());
       childNodes.forEach(this::checkNode);
-      if (rNode.getNode().getType() == 1 && childNodes.size() != 0) {
-        throw new IllegalStateException("Sub-criteria can own any child");
+      if (rNode.getNode().getType() == NodeModel.TYPE_CRITERIA && childNodes.size() != 0) {
+        throw new IllegalStateException("Criteria can own any child");
       }
 
       childNodes.forEach(n -> {
@@ -101,7 +102,7 @@ public class ApiController {
   ) {
     // Checks the validity of the parent
     RelationNodeModel parentRNode = null;
-    if (parent == 0) {
+    if (parent == NodeModel.INVALID_PARENT) {
       // Add a root
       RelationNodeModel root = findNodeByParent(parent);
       if (root != null) {
