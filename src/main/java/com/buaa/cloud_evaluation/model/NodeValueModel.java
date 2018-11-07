@@ -14,12 +14,12 @@ public class NodeValueModel {
   @JsonIgnore
   private String vectorStr;
 
-  private List<Integer> matrix;
+  private List<Double> matrix;
   private List<Double> vector;
 
   public void setMatrixStr(String matrixStr) {
     this.matrixStr = matrixStr;
-    this.matrix = matrixStr != null ? Serialization.stringToIntList(matrixStr) : null;
+    this.matrix = matrixStr != null ? Serialization.stringToDoubleList(matrixStr) : null;
   }
 
   public void setVectorStr(String vectorStr) {
@@ -27,9 +27,9 @@ public class NodeValueModel {
     this.vector = vectorStr != null ? Serialization.stringToDoubleList(vectorStr) : null;
   }
 
-  public void setMatrix(List<Integer> matrix) {
+  public void setMatrix(List<Double> matrix) {
     this.matrix = matrix;
-    this.matrixStr = matrix != null ? Serialization.intListToString(matrix) : null;
+    this.matrixStr = matrix != null ? Serialization.doubleListToString(matrix) : null;
   }
 
   public void setVector(List<Double> vector) {
