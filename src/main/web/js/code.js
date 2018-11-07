@@ -72,6 +72,18 @@ async function removeNode(id) {
   }
 }
 
+async function pushNodeValue(nodeId, matrix) {
+  const response = await fetch(url(`/add_node_value?nodeId=${encodeURIComponent(nodeId)}&matrixStr=${encodeURIComponent(matrix)}`));
+  const result = await response.json()
+
+  if (result.success) {
+    return result.value;
+  } else {
+    throw result.error;
+  }
+}
+
+
 /**
  * Add the node and the edge to it's parent, to the screen.
  */
@@ -267,14 +279,27 @@ function fillInfoPanelWithRNode(rNode) {
     while (newMatrixContainer.firstChild) {
       newMatrixContainer.removeChild(newMatrixContainer.firstChild);
     }
-    newMatrixContainer.appendChild(createMatrixDiv(rNode.children.length, null));
+    const newMatrix = createMatrixDiv(rNode.children.length, null);
+    newMatrixContainer.appendChild(newMatrix);
+    document.getElementById('info-matrix-new-add').onclick = async function () {
+      const matrixText = createMatrixText(rNode.children.length, newMatrix)
+      if (matrixText != null) {
+        try {
+          await pushNodeValue(node.id, matrixText);
+          await refreshRenderPanel();
+          cy.$(`#${nodeId(node.id)}`).emit("click");
+        } catch (e) {
+          // TODO pop error
+        }
+      }
+    }
 
     // Matrix history
     const historyContainer = document.getElementById('info-matrix-history');
     while (historyContainer.firstChild) {
       historyContainer.removeChild(historyContainer.firstChild);
     }
-    node.historyValues.forEach((child) => {
+    node.historyValues.reverse().forEach((child) => {
       historyContainer.appendChild(createHistoryEntryDiv(child))
     })
   }
@@ -331,6 +356,29 @@ function createMatrixDiv(n, list) {
   }
 
   return div;
+}
+
+function createMatrixText(n, div) {
+  if (div.childElementCount !== n * n) {
+    return null;
+  }
+
+  let text = (n * (n - 1) / 2).toString()
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < n; j++) {
+      if (i < j) {
+        text += ",";
+        const num = parseFloat(div.children[i * n + j].value);
+        if (!isNaN(num)) {
+          text += num;
+        } else {
+          return null;
+        }
+      }
+    }
+  }
+
+  return text;
 }
 
 function createVectorDiv(list) {
