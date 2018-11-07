@@ -7,8 +7,8 @@
         <id column="id" property="id" jdbcType="INTEGER"/>
         <result column="type" property="type" jdbcType="INTEGER"/>
         <result column="name" property="name" jdbcType="VARCHAR"/>
-        <result column="history_values" property="historyValues" jdbcType="VARCHAR"/>
-        <result column="current_value" property="currentValue" jdbcType="INTEGER"/>
+        <result column="history_value_ids" property="historyValueIds" jdbcType="VARCHAR"/>
+        <result column="current_value_id" property="currentValueId" jdbcType="INTEGER"/>
         <result column="source" property="source" jdbcType="INTEGER"/>
     </resultMap>
 

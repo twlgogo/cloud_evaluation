@@ -9,8 +9,8 @@ public class NodeModel {
   private String name;
   private int type;
   private int parent;
-  private String historyValues;
-  private Integer currentValue;
+  private String historyValueIds;
+  private Integer currentValueId;
   private Integer source;
 
   public RelationNodeModel wrap() {

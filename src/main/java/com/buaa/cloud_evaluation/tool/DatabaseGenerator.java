@@ -25,8 +25,8 @@ public class DatabaseGenerator {
           + "name text,"
           + "type integer,"
           + "parent integer," // 0 if it's root
-          + "history_values text," // nullable
-          + "current_value integer," // nullable
+          + "history_value_ids text," // nullable
+          + "current_value_id integer," // nullable
           + "source integer" // nullable
           + ")");
 
