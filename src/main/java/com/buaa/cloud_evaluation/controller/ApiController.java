@@ -192,6 +192,7 @@ public class ApiController {
     if (parentRNode.getNode().getCurrentValueId() != NodeValueModel.INVALID_VALUE_ID) {
       service.removeNodeValue(parentRNode.getNode().getCurrentValueId());
     }
+    service.updateValueOfNode(parentRNode.getNode().getId(), "0", NodeValueModel.INVALID_VALUE_ID);
     parentRNode.getChildren().removeIf(n -> n.getNode().getId() == id);
     parentRNode.getNode().setHistoryValueIds(Serialization.intListToString(Collections.emptyList()));
     parentRNode.getNode().setCurrentValueId(NodeValueModel.INVALID_VALUE_ID);
