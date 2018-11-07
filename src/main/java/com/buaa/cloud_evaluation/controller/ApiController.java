@@ -259,6 +259,53 @@ public class ApiController {
     return ApiResultModule.success(null);
   }
 
+  @RequestMapping("/remove_node_value")
+  public ApiResultModule<Void> removeNodeValue(
+      int nodeId,
+      int nodeValueId
+  ) {
+    RelationNodeModel rNode = findNodeById(nodeId);
+    if (rNode == null) {
+      return ApiResultModule.error("Can't find node with the id");
+    }
+    NodeValueModel nodeValue = rNode.getNode().getHistoryValues().stream().filter(nv -> nv.getId() == nodeValueId).findFirst().orElse(null);
+    if (nodeValue == null) {
+      return ApiResultModule.error("Can't find node value with the id");
+    }
+
+    // AHP on all matrix
+    NodeValueModel currentValue = null;
+    if (rNode.getNode().getHistoryValues().size() > 1) {
+      List<NodeValueModel> list = new ArrayList<>(rNode.getNode().getHistoryValues());
+      list.remove(nodeValue);
+      List<AHPRequest> requests = list.stream().map(NodeValueModel::toAHPRequest).collect(Collectors.toList());
+      AHPResult fixResult = AHPCacluator.fixAHPWeight(requests);
+      if (!fixResult.isFitCI()) {
+        return ApiResultModule.error("No fit CI");
+      }
+
+      currentValue = new NodeValueModel();
+      currentValue.setN(fixResult.getN());
+      currentValue.setMatrix(null);
+      currentValue.setVector(fixResult.getResList());
+    }
+
+    // Remove the node value
+    service.removeNodeValue(nodeValueId);
+    service.removeNodeValue(rNode.getNode().getCurrentValueId());
+    // Add new current value
+    if (currentValue != null) {
+      currentValue = service.addNodeValue(currentValue);
+    }
+    // Update value of node
+    List<Integer> newHistoryValueIds = Serialization.stringToIntList(rNode.getNode().getHistoryValueIds());
+    newHistoryValueIds.remove((Integer) nodeValueId);
+    NodeModel node = service.updateValueOfNode(nodeId, Serialization.intListToString(newHistoryValueIds), currentValue != null ? currentValue.getId() : NodeValueModel.INVALID_VALUE_ID);
+    rNode.setNode(node);
+
+    return ApiResultModule.success(null);
+  }
+
   @Nullable
   private RelationNodeModel findNodeById(int id) {
     return findNode(rn -> rn.getNode().getId() == id);
