@@ -345,7 +345,7 @@ function createMatrixDiv(n, list) {
   for (let i = 0; i < n; i++) {
     for (let j = 0; j < n; j++) {
       let cell;
-      if (i >= j) {
+      if (i >= j || list != null) {
         cell = document.createElement("div");
         cell.className = 'matrix-item';
         cell.textContent = texts[`${i}-${j}`];
@@ -413,14 +413,6 @@ function createHistoryEntryDiv(node, nodeValue) {
 
   const buttons = document.createElement("div");
   grid.appendChild(buttons);
-
-  const update = document.createElement("input");
-  update.type = "submit";
-  update.value = "Update"
-  update.onclick = function() {
-    // TODO
-  }
-  buttons.appendChild(update);
 
   const remove = document.createElement("input");
   remove.type = "submit";
