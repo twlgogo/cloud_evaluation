@@ -26,6 +26,8 @@ public interface ApiService {
    */
   NodeModel updateNode(int id, String name, int type, int source);
 
+  NodeModel updateValueOfNode(int id, String historyValueIds, int currentValueId);
+
   /**
    * Removes the node with the id from database.
    */
@@ -35,6 +37,16 @@ public interface ApiService {
    * Returns the node with the id from database.
    */
   NodeValueModel getNodeValue(int id);
+
+  /**
+   *
+   */
+  NodeValueModel addNodeValue(NodeValueModel nodeValue);
+
+  /**
+   * Returns the node value with the id from database.
+   */
+  //void removeNodeValue(int id);
 
   /**
    * Deletes all nodes and all node values from database.

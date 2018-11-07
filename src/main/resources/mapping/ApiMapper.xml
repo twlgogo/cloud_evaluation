@@ -43,6 +43,13 @@
         where id = #{id}
     </update>
 
+    <update id="updateValueOfNode">
+        update nodes
+        set history_value_ids = #{historyValueIds},
+            current_value_id = #{currentValueId}
+        where id = #{id}
+    </update>
+
     <delete id="deleteNode">
         delete from nodes
         where id = #{id}
@@ -56,5 +63,10 @@
         select * from node_values
         where id = #{id}
     </select>
+
+    <insert id="insertNodeValue" useGeneratedKeys="true" keyProperty="nodeValue.id" keyColumn="id">
+        insert into node_values (n, matrix_str, vector_str)
+        values (#{nodeValue.n}, #{nodeValue.matrixStr}, #{nodeValue.vectorStr})
+    </insert>
 
 </mapper>

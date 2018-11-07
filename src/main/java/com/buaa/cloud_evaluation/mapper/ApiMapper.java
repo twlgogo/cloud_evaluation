@@ -24,6 +24,12 @@ public interface ApiMapper {
       @Param("source") int source
   );
 
+  void updateValueOfNode(
+      @Param("id") int id,
+      @Param("historyValueIds") String historyValueIds,
+      @Param("currentValueId") int currentValueId
+  );
+
   void deleteNode(
       @Param("id") int id
   );
@@ -32,5 +38,9 @@ public interface ApiMapper {
 
   NodeValueModel selectNodeValue(
       @Param("id") int id
+  );
+
+  void insertNodeValue(
+      @Param("nodeValue") NodeValueModel nodeValue
   );
 }

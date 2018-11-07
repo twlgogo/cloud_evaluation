@@ -1,15 +1,20 @@
 package com.buaa.cloud_evaluation.controller;
 
+import com.buaa.cloud_evaluation.ahp.AHPCacluator;
+import com.buaa.cloud_evaluation.ahp.AHPRequest;
+import com.buaa.cloud_evaluation.ahp.AHPResult;
 import com.buaa.cloud_evaluation.model.ApiResultModule;
 import com.buaa.cloud_evaluation.model.NodeModel;
+import com.buaa.cloud_evaluation.model.NodeValueModel;
 import com.buaa.cloud_evaluation.model.RelationNodeModel;
 import com.buaa.cloud_evaluation.service.ApiService;
+import com.buaa.cloud_evaluation.util.Serialization;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -96,10 +101,10 @@ public class ApiController {
 
   @RequestMapping("/add_node")
   public ApiResultModule<NodeModel> addNode(
-      @Param("name") String name,
-      @Param("type") int type,
-      @Param("parent") int parent,
-      @Param("source") int source
+      String name,
+      int type,
+      int parent,
+      int source
   ) {
     // Checks the validity of the parent
     RelationNodeModel parentRNode = null;
@@ -138,10 +143,10 @@ public class ApiController {
 
   @RequestMapping("/update_node")
   public ApiResultModule<NodeModel> updateNode(
-      @Param("id") int id,
-      @Param("name") String name,
-      @Param("type") int type,
-      @Param("source") int source
+      int id,
+      String name,
+      int type,
+      int source
   ) {
     RelationNodeModel rNode = findNodeById(id);
     if (rNode == null) {
@@ -162,7 +167,7 @@ public class ApiController {
 
   @RequestMapping("/remove_node")
   public ApiResultModule<Void> removeNode(
-      @Param("id") int id
+      int id
   ) {
     RelationNodeModel rNode = findNodeById(id);
     if (rNode == null) {
@@ -185,6 +190,62 @@ public class ApiController {
     parentRNode.getNode().setHistoryValueIds("0");
     parentRNode.getNode().setCurrentValueId(-1);
     parentRNode.getNode().fillNodeValues(service);
+
+    return ApiResultModule.success(null);
+  }
+
+  @RequestMapping("/add_node_value")
+  public ApiResultModule<Void> addNodeValue(
+      int nodeId,
+      String matrixStr
+  ) {
+    RelationNodeModel rNode = findNodeById(nodeId);
+    if (rNode == null) {
+      return ApiResultModule.error("Can't find node with the id");
+    }
+    List<Double> matrix = Serialization.stringToDoubleList(matrixStr);
+    int n = rNode.getChildren().size();
+    if (matrix.size() == 0 || matrix.size() != n * (n - 1) / 2) {
+      return ApiResultModule.error("Matrix size doesn't match");
+    }
+
+    // AHP on the matrix
+    AHPRequest request = new AHPRequest();
+    request.setN(n);
+    request.setList(matrix);
+    AHPResult result = AHPCacluator.getAHPResult(request);
+    if (!result.isFitCI()) {
+      return ApiResultModule.error("No fit CI");
+    }
+
+    NodeValueModel historyValue = new NodeValueModel();
+    historyValue.setN(n);
+    historyValue.setMatrix(matrix);
+    historyValue.setVector(result.getResList());
+
+    // AHP on all matrix
+    List<NodeValueModel> list = new ArrayList<>(rNode.getNode().getHistoryValues());
+    list.add(historyValue);
+    List<AHPRequest> requests = list.stream().map(NodeValueModel::toAHPRequest).collect(Collectors.toList());
+    AHPResult fixResult = AHPCacluator.fixAHPWeight(requests);
+    if (!fixResult.isFitCI()) {
+      return ApiResultModule.error("No fit CI");
+    }
+
+    NodeValueModel currentValue = new NodeValueModel();
+    currentValue.setN(n);
+    currentValue.setMatrix(null);
+    currentValue.setVector(fixResult.getResList());
+
+    // Add new history value
+    historyValue = service.addNodeValue(historyValue);
+    // Add new current value
+    currentValue = service.addNodeValue(currentValue);
+    // Update value of node
+    List<Integer> newHistoryValueIds = Serialization.stringToIntList(rNode.getNode().getHistoryValueIds());
+    newHistoryValueIds.add(historyValue.getId());
+    NodeModel node = service.updateValueOfNode(nodeId, Serialization.intListToString(newHistoryValueIds), currentValue.getId());
+    rNode.setNode(node);
 
     return ApiResultModule.success(null);
   }

@@ -48,6 +48,12 @@ public class ApiServiceImpl implements ApiService {
   }
 
   @Override
+  public NodeModel updateValueOfNode(int id, String historyValueIds, int currentValueId) {
+    mapper.updateValueOfNode(id, historyValueIds, currentValueId);
+    return getNode(id);
+  }
+
+  @Override
   public void removeNode(int id) {
     mapper.deleteNode(id);
   }
@@ -55,6 +61,12 @@ public class ApiServiceImpl implements ApiService {
   @Override
   public NodeValueModel getNodeValue(int id) {
     return mapper.selectNodeValue(id);
+  }
+
+  @Override
+  public NodeValueModel addNodeValue(NodeValueModel nodeValue) {
+    mapper.insertNodeValue(nodeValue);
+    return getNodeValue(nodeValue.getId());
   }
 
   @Override

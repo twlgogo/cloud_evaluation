@@ -1,5 +1,6 @@
 package com.buaa.cloud_evaluation.model;
 
+import com.buaa.cloud_evaluation.ahp.AHPRequest;
 import com.buaa.cloud_evaluation.util.Serialization;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
@@ -35,6 +36,13 @@ public class NodeValueModel {
   public void setVector(List<Double> vector) {
     this.vector = vector;
     this.vectorStr = vector != null ? Serialization.doubleListToString(vector) : null;
+  }
+
+  public AHPRequest toAHPRequest() {
+    AHPRequest request = new AHPRequest();
+    request.setN(n);
+    request.setList(matrix);
+    return request;
   }
 
   public static final int INVALID_VALUE_ID = -1;
