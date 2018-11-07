@@ -31,8 +31,8 @@ async function pullTree() {
   }
 }
 
-async function pushNode(name, type, parent) {
-  const response = await fetch(url(`/add_node?name=${encodeURIComponent(name)}&type=${encodeURIComponent(type)}&parent=${encodeURIComponent(parent)}`));
+async function pushNode(name, type, parent, source) {
+  const response = await fetch(url(`/add_node?name=${encodeURIComponent(name)}&type=${encodeURIComponent(type)}&parent=${encodeURIComponent(parent)}&source=${encodeURIComponent(source)}`));
   const result = await response.json()
 
   if (result.success) {
@@ -139,7 +139,7 @@ async function refreshRenderPanel() {
   let tree = await pullTree()
   if (tree == null) {
     // No root, add a root
-    await pushNode("root", TYPE_ELEMENT, INVALID_PARENT)
+    await pushNode("root", TYPE_ELEMENT, INVALID_PARENT, INVALID_SOURCE)
     tree = await pullTree()
   }
 

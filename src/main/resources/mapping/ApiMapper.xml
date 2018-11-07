@@ -24,8 +24,8 @@
     </select>
 
     <insert id="insertNode" useGeneratedKeys="true" keyProperty="node.id" keyColumn="id">
-        insert into nodes (name, type, parent)
-        values (#{node.name}, #{node.type}, #{node.parent})
+        insert into nodes (name, type, parent, source)
+        values (#{node.name}, #{node.type}, #{node.parent}, #{node.source})
     </insert>
 
     <update id="updateNode">

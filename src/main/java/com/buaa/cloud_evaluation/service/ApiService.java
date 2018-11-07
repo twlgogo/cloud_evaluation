@@ -18,7 +18,7 @@ public interface ApiService {
   /**
    * Creates a node with the name, the type and the parent.
    */
-  NodeModel addNode(String name, int type, int parent);
+  NodeModel addNode(String name, int type, int parent, int source);
 
   NodeModel updateNode(int id, String name, int type, int source);
 

@@ -24,11 +24,12 @@ public class ApiServiceImpl implements ApiService {
   }
 
   @Override
-  public NodeModel addNode(String name, int type, int parent) {
+  public NodeModel addNode(String name, int type, int parent, int source) {
     NodeModel node = new NodeModel();
     node.setName(name);
     node.setType(type);
     node.setParent(parent);
+    node.setSource(source);
     mapper.insertNode(node);
     return mapper.selectNode(node.getId());
   }

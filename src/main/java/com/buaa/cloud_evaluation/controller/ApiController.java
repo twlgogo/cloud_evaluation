@@ -98,7 +98,8 @@ public class ApiController {
   public ApiResultModule<NodeModel> addNode(
       @Param("name") String name,
       @Param("type") int type,
-      @Param("parent") int parent
+      @Param("parent") int parent,
+      @Param("source") int source
   ) {
     // Checks the validity of the parent
     RelationNodeModel parentRNode = null;
@@ -117,8 +118,12 @@ public class ApiController {
         return ApiResultModule.error("Criteria node can't be a parent");
       }
     }
+    // Checks the validity of the source
+    if (type == NodeModel.TYPE_ELEMENT && source != NodeModel.INVALID_SOURCE) {
+      return ApiResultModule.error("Element doesn't support source");
+    }
 
-    NodeModel node = service.addNode(name, type, parent);
+    NodeModel node = service.addNode(name, type, parent, source);
 
     // Maintains tree
     RelationNodeModel rNode = node.wrap();
@@ -132,7 +137,7 @@ public class ApiController {
   }
 
   @RequestMapping("/update_node")
-  public ApiResultModule<NodeModel> addNode(
+  public ApiResultModule<NodeModel> updateNode(
       @Param("id") int id,
       @Param("name") String name,
       @Param("type") int type,
