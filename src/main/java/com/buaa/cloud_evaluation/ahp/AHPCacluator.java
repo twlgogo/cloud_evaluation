@@ -51,7 +51,7 @@ public class AHPCacluator {
     for (int i = 0; i < n ; i++) {
       double cur = 0.0;
       for (int j = 0; j < ahpResults.size(); j++) {
-        cur += ahpResults.get(j).getResList().get(i) * CIs[i];
+        cur += ahpResults.get(j).getResList().get(i) * CIs[j];
       }
       fixedWeight.add(cur);
     }
