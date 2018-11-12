@@ -2,7 +2,6 @@ package com.buaa.cloud_evaluation.ahp;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class AHPCacluator {
@@ -33,16 +32,33 @@ public class AHPCacluator {
     }
     ahpResult.setResList(list);
     ahpResult.setFitCI(CI < 0.1);
+    ahpResult.setCI(CI);
     return ahpResult;
   }
 
   public static AHPResult fixAHPWeight(List<AHPRequest> historyAHPRequests) {
-    // FIXME placeholder
+    List<AHPResult> ahpResults = new ArrayList<>();
+    double[] CIs = new double[historyAHPRequests.size()];
+    int index = 0;
+    for (AHPRequest ahp:historyAHPRequests) {
+      AHPResult cur = getAHPResult(ahp);
+      ahpResults.add(cur);
+      CIs[index++] = 0.1 - cur.getCI();
+    }
+    Normalization.normal(CIs);
     int n = historyAHPRequests.get(0).getN();
+    List<Double> fixedWeight = new ArrayList<>();
+    for (int i = 0; i < n ; i++) {
+      double cur = 0.0;
+      for (int j = 0; j < ahpResults.size(); j++) {
+        cur += ahpResults.get(j).getResList().get(i) * CIs[i];
+      }
+      fixedWeight.add(cur);
+    }
     AHPResult result = new AHPResult();
     result.setFitCI(true);
     result.setN(n);
-    result.setResList(Collections.nCopies(n, 1.0 / n));
+    result.setResList(fixedWeight);
     return result;
   }
 
