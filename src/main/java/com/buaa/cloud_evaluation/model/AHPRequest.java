@@ -1,4 +1,4 @@
-package com.buaa.cloud_evaluation.ahp;
+package com.buaa.cloud_evaluation.model;
 
 import java.util.List;
 import lombok.Data;

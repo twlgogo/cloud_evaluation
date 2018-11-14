@@ -1,8 +1,8 @@
 package com.buaa.cloud_evaluation.controller;
 
 import com.buaa.cloud_evaluation.ahp.AHPCacluator;
-import com.buaa.cloud_evaluation.ahp.AHPRequest;
-import com.buaa.cloud_evaluation.ahp.AHPResult;
+import com.buaa.cloud_evaluation.model.AHPRequest;
+import com.buaa.cloud_evaluation.model.AHPResult;
 import com.buaa.cloud_evaluation.model.ApiResultModule;
 import com.buaa.cloud_evaluation.model.NodeModel;
 import com.buaa.cloud_evaluation.model.NodeValueModel;
