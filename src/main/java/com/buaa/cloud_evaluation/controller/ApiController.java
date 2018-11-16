@@ -133,6 +133,18 @@ public class ApiController {
 
     NodeModel node = service.addNode(name, type, parent, source);
 
+    // Remove all node values from its parent
+    if (parentRNode != null) {
+      Serialization.stringToIntList(parentRNode.getNode().getHistoryValueIds()).forEach(service::removeNodeValue);
+      if (parentRNode.getNode().getCurrentValueId() != NodeValueModel.INVALID_VALUE_ID) {
+        service.removeNodeValue(parentRNode.getNode().getCurrentValueId());
+      }
+      service.updateValueOfNode(parentRNode.getNode().getId(), "0", NodeValueModel.INVALID_VALUE_ID);
+      parentRNode.getNode().setHistoryValueIds(Serialization.intListToString(Collections.emptyList()));
+      parentRNode.getNode().setCurrentValueId(NodeValueModel.INVALID_VALUE_ID);
+      parentRNode.getNode().fillNodeValues(service);
+    }
+
     // Maintains tree
     RelationNodeModel rNode = node.wrap();
     if (parentRNode != null) {
