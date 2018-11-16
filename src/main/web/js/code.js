@@ -5,7 +5,9 @@ const INVALID_PARENT = -1;
 const INVALID_SOURCE = -1;
 
 
-const cy = installCytoscape()
+const cy = installCytoscape();
+
+let globalTree;
 
 
 function url(path) {
@@ -128,6 +130,17 @@ async function removeNodeValue(nodeId, nodeValueId) {
   }
 }
 
+async function pullItemValue(itemId, timestamp) {
+  const response = await fetch(url(`/get_item_id?itemId=${encodeURIComponent(itemId)}&timestamp=${encodeURIComponent(timestamp)}`));
+  const result = await response.json()
+
+  if (result.success) {
+    return result.value;
+  } else {
+    throw result.error;
+  }
+}
+
 /**
  * Add the node and the edge to it's parent, to the screen.
  */
@@ -136,7 +149,7 @@ function addNode(cy, rNode) {
 
   cy.add({
     group: "nodes",
-    data: { id: nodeId(node.id), node: node, name: node.name, percent: toPercent(rNode.globalPercent), value: rNode.value },
+    data: { id: nodeId(node.id), node: node, name: node.name, percent: toPercent(rNode.globalPercent), value: Math.round(rNode.value * 100) / 100 },
   });
 
   cy.$(`#${nodeId(node.id)}`).on("click", function() {
@@ -173,6 +186,7 @@ function layout(cy) {
     name: 'dagre'
   });
   layout.run();
+  cy.fit(150);
 }
 
 function installCytoscape() {
@@ -226,6 +240,8 @@ async function refreshRenderPanel() {
     await pushNode("root", TYPE_ELEMENT, INVALID_PARENT, INVALID_SOURCE)
     tree = await pullTree()
   }
+
+  globalTree = tree;
 
   await setTree(cy, tree)
 
@@ -496,8 +512,58 @@ function setupInfoPanel() {
   }
 }
 
+let timeoutID = null;
+let time = 0;
+
+async function fillNodeValue (rNode) {
+  if (rNode.node.type === TYPE_CRITERIA) {
+    rNode.value = await pullItemValue(rNode.node.source, time);
+  } else if (rNode.children.length === 0) {
+    rNode.value = NaN;
+  } else {
+    rNode.value = 0;
+    for (let i = 0; i < rNode.children.length; i++) {
+      const child = rNode.children[i];
+      await fillNodeValue(child);
+      rNode.value += child.levelPercent * child.value;
+    }
+  }
+}
+
+async function tick() {
+  if (globalTree == null) {
+    return;
+  }
+
+  await fillNodeValue(globalTree);
+  await setTree(cy, globalTree)
+  layout(cy)
+
+  time += 1;
+
+  timeoutID = window.setTimeout(async function() {
+    await tick();
+  }, 1000);
+}
+
+async function onStart() {
+  if (timeoutID == null) {
+    await tick();
+  }
+}
+
+function onStop() {
+  if (timeoutID != null) {
+    window.clearTimeout(timeoutID);
+  }
+  timeoutID = null;
+  time = 0;
+}
+
 async function main () {
   await setupRenderPanel();
+  document.getElementById('button-start').onclick = async function() { await onStart(); };
+  document.getElementById('button-stop').onclick = async function() { await onStop(); };
   setupInfoPanel();
 }
 
