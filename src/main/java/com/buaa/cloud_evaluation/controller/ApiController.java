@@ -349,4 +349,13 @@ public class ApiController {
 
     return null;
   }
+
+  @RequestMapping("/get_item_id")
+  public ApiResultModule<Double> getItemValue(
+      int itemId,
+      int timestamp
+  ) {
+    // TODO
+    return ApiResultModule.success(Math.random());
+  }
 }
