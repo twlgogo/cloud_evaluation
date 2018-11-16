@@ -20,6 +20,11 @@ function reciprocal(num) {
   }
 }
 
+function toPercent(num) {
+  num *= 100;
+  return `${Math.round(num * 100) / 100}%`
+}
+
 function nodeId(id) {
   return `n${id}`
 }
@@ -33,6 +38,35 @@ async function pullTree() {
   const result = await response.json()
 
   if (result.success) {
+
+
+    const queue = [];
+    queue.push(result.value);
+
+    while (queue.length !== 0) {
+      const rNode = queue.shift();
+
+      rNode.value = NaN
+      if (rNode.levelPercent == null) {
+        rNode.levelPercent = 1;
+      }
+      if (rNode.globalPercent == null) {
+        rNode.globalPercent = 1;
+      }
+
+      rNode.children.forEach((child, index) => {
+        if (rNode.node.currentValue != null) {
+          child.levelPercent = rNode.node.currentValue.vector[index];
+          child.globalPercent = child.levelPercent * rNode.globalPercent;
+        } else {
+          child.levelPercent = NaN;
+          child.globalPercent = NaN;
+        }
+        queue.push(child)
+      })
+    }
+
+
     return result.value;
   } else {
     throw result.error;
@@ -102,7 +136,7 @@ function addNode(cy, rNode) {
 
   cy.add({
     group: "nodes",
-    data: { id: nodeId(node.id), label: node.name, node: node },
+    data: { id: nodeId(node.id), node: node, name: node.name, percent: toPercent(rNode.globalPercent), value: rNode.value },
   });
 
   cy.$(`#${nodeId(node.id)}`).on("click", function() {
@@ -142,7 +176,7 @@ function layout(cy) {
 }
 
 function installCytoscape() {
-  return window.cy = cytoscape({
+  const cy = cytoscape({
     container: document.getElementById('render-panel'),
 
     autoungrabify: true,
@@ -155,10 +189,6 @@ function installCytoscape() {
       {
         selector: 'node',
         style: {
-          'content': 'data(label)',
-          'text-opacity': 0.5,
-          'text-valign': 'center',
-          'text-halign': 'right',
           'background-color': '#11479e'
         }
       },
@@ -174,6 +204,19 @@ function installCytoscape() {
       }
     ]
   });
+
+  cy.nodeHtmlLabel([{
+    query: 'node',
+    valign: "center",
+    halign: "right",
+    valignBox: "center",
+    halignBox: "right",
+    tpl: function(data) {
+      return `<span class="node-label">${data.name}</span></br><span class="node-label">${data.percent}</span></br><span class="node-label">${data.value}</span>`;
+    }
+  }]);
+
+  return cy;
 }
 
 async function refreshRenderPanel() {

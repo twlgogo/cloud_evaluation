@@ -40,8 +40,11 @@
   text-align: center;
 }
 
-
 .grid-two {
   display: grid;
   grid-template-columns: 50% 50%;
+}
+
+.node-label {
+  font-size: 8px;
 }
