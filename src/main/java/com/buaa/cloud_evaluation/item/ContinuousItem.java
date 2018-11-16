@@ -1,11 +1,15 @@
 package com.buaa.cloud_evaluation.item;
 
-public class Item1 extends Item {
-  public Item1(){
-    itemId = 1;
-    max = 50;
-    min = 20;
-    direction = -1;
+public class ContinuousItem extends Item {
+
+  public ContinuousItem(int itemId, int direction, int type, double max, double min, String itemName, String tableName) {
+    this.itemId = itemId;
+    this.direction = direction;
+    this.type = type;
+    this.max = max;
+    this.min = min;
+    this.itemName = itemName;
+    this.tableName = tableName;
   }
 
   @Override

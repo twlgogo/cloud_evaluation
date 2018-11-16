@@ -1,0 +1,11 @@
+[
+  {
+    "id": 0,
+    "type": 0,
+    "table_name": "asa",
+    "item_name": "AAA",
+    "max": 50,
+    "min": 20,
+    "direction": -1
+  }
+]
