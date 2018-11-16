@@ -1,6 +1,5 @@
 package com.buaa.cloud_evaluation.model;
 
-import com.buaa.cloud_evaluation.ahp.AHPRequest;
 import com.buaa.cloud_evaluation.util.Serialization;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;

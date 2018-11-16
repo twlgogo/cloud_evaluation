@@ -1,5 +1,8 @@
 package com.buaa.cloud_evaluation.ahp;
 
+import com.buaa.cloud_evaluation.model.AHPRequest;
+import com.buaa.cloud_evaluation.model.AHPResult;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
