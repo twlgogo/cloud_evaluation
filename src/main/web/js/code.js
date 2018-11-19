@@ -197,6 +197,7 @@ function installCytoscape() {
     container: document.getElementById('render-panel'),
 
     autoungrabify: true,
+    userPanningEnabled: false,
 
     layout: {
       name: 'dagre'
