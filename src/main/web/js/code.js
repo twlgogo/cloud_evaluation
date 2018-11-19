@@ -60,6 +60,9 @@ async function pullTree() {
         if (rNode.node.currentValue != null) {
           child.levelPercent = rNode.node.currentValue.vector[index];
           child.globalPercent = child.levelPercent * rNode.globalPercent;
+        } else if (rNode.children.length === 1 && child.node.type === TYPE_CRITERIA) {
+          child.levelPercent = 1;
+          child.globalPercent = rNode.globalPercent;
         } else {
           child.levelPercent = NaN;
           child.globalPercent = NaN;
