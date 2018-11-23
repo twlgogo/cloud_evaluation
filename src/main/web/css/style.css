@@ -1,8 +1,26 @@
 #render-panel {
-  width: 100%;
-  height: 100%;
+  width: 50%;
+  height: 80%;
   position: absolute;
   left: 0;
+  top: 0;
+  z-index: 1;
+}
+
+#statistics-panel {
+  width: 50%;
+  height: 80%;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  z-index: 1;
+}
+
+#log-panel {
+  width: 100%;
+  height: 20%;
+  position: absolute;
+  left: 50%;
   top: 0;
   z-index: 1;
 }
@@ -14,6 +32,24 @@
   left: 0;
   top: 0;
   z-index: 2;
+}
+
+#vertical-line {
+  width: 8px;
+  height: 80%;
+  background-color: black;
+  position: absolute;
+  left: 50%;
+  top: 0;
+}
+
+#horizontal-line {
+  width: 100%;
+  height: 8px;
+  background-color: black;
+  position: absolute;
+  left: 0;
+  top: 80%;
 }
 
 .modal {
