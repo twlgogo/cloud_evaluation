@@ -10,9 +10,22 @@
   <script src="https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.2.2/cytoscape-dagre.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/cytoscape-cxtmenu@3.0.2/cytoscape-cxtmenu.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/cytoscape-node-html-label@1.1.2/dist/cytoscape-node-html-label.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
 </head>
 <body>
 <div id="render-panel"></div>
+<div id="vertical-line"></div>
+<div id="statistics-panel">
+  <div style="height: 5%; display: table; margin: auto auto">总分：<span id="total-score">100</span></div>
+  <div id="chart-container" style="width: auto; height: 95%; display: grid; grid-template-columns: auto auto;">
+    <canvas id="chart1"></canvas>
+    <canvas id="chart2"></canvas>
+    <canvas id="chart3"></canvas>
+    <canvas id="chart4"></canvas>
+  </div>
+</div>
+<div id="horizontal-line"></div>
+<div id="log-panel"></div>
 <div id="control-panel">
   <button id="button-start">Start</button>
   <button id="button-stop">Stop</button>
@@ -27,8 +40,8 @@
       <div id="info-node-type">
         Type:
         <select id="info-node-type-value" title="Type">
-          <option id="info-node-type-value-element" value="0">度量元</option>
-          <option id="info-node-type-value-criteria" value="1">子准则</option>
+          <option id="info-node-type-value-element" value="0">子准则</option>
+          <option id="info-node-type-value-criteria" value="1">度量元</option>
         </select>
       </div>
       <div id="info-node-source">
@@ -51,8 +64,8 @@
       <div id="info-add-child-type">
         Type:
         <select id="info-add-child-type-value" title="Type">
-          <option value="0">度量元</option>
-          <option value="1">子准则</option>
+          <option value="0">子准则</option>
+          <option value="1">度量元</option>
         </select>
       </div>
       <div id="info-add-child-source">
@@ -87,5 +100,7 @@
   </div>
 </div>
 <script defer src="js/code.js"></script>
+<script defer src="js/statistics.js"></script>
+<script defer src="js/log.js"></script>
 </body>
 </html>
