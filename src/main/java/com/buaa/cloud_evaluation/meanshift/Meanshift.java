@@ -63,8 +63,8 @@ public class Meanshift {
         new double[] {1, 1, 1, 1},
         0.1,
         0.1,
-        0.01,
-        0.2);
+        0.001,
+        0.02);
   }
 
   public Meanshift(
