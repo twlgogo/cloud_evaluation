@@ -20,9 +20,11 @@
   width: 100%;
   height: 20%;
   position: absolute;
-  left: 50%;
-  top: 0;
+  left: 0;
+  top: 80%;
   z-index: 1;
+  padding: 16px;
+  overflow: auto;
 }
 
 #control-panel {
@@ -50,6 +52,30 @@
   position: absolute;
   left: 0;
   top: 80%;
+}
+
+#chart-container {
+
+}
+
+#chart1 {
+  width: 100%;
+  height: 100%;
+}
+
+#chart2 {
+  width: 100%;
+  height: 100%;
+}
+
+#chart3 {
+  width: 100%;
+  height: 100%;
+}
+
+#chart4 {
+  width: 100%;
+  height: 100%;
 }
 
 .modal {
