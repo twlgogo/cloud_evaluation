@@ -157,14 +157,22 @@ public class AHPCacluator {
   public static void main(String[] args) {
     AHPRequest ahpRequest = new AHPRequest();
     List<Double> list = new ArrayList<>();
-    list.add(3.0);
-    list.add(5.0);
     list.add(2.0);
+    list.add(4.0);
+    list.add(1.33333);
+    list.add(2.0);
+    list.add(0.66667);
+    list.add(0.33333);
     ahpRequest.setList(list);
-    ahpRequest.setN(3);
+    ahpRequest.setN(4);
     AHPResult ahpResult = getAHPResult(ahpRequest);
     List<Double> reslist = ahpResult.getResList();
     System.out.println(reslist);
+    double sum = 0;
+    for (Double a:reslist) {
+      sum += a;
+    }
+    System.out.println(sum);
   }
 
 }

@@ -2,7 +2,7 @@
   {
     "id": 0,
     "type": 0,
-    "table_name": "asa",
+    "table_name": "item1_source",
     "item_name": "AAA",
     "max": 50,
     "min": 20,
