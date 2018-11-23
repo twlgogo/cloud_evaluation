@@ -6,6 +6,7 @@ import com.buaa.cloud_evaluation.model.AHPResult;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class AHPCacluator {
   private static double[] RI = {0.00,0.00,0.58,0.90,1.12,1.32,1.41,1.45,1.49,1.52,1.54};
@@ -173,14 +174,15 @@ public class AHPCacluator {
     }
   }
 
-  public static void main(String[] args) {
+
+  public static void function(){
     AHPRequest ahpRequest = new AHPRequest();
     List<Double> list = new ArrayList<>();
-    list.add(6.0);
-    list.add(6.0);
-    list.add(3.0);
+    list.add(2.0);
+    list.add(4.0);
+    list.add(1.5);
+    list.add(2.0);
     list.add(1.0);
-    list.add(0.5);
     list.add(0.5);
     ahpRequest.setList(list);
     ahpRequest.setN(4);
@@ -192,6 +194,19 @@ public class AHPCacluator {
       sum += a;
     }
     System.out.println(sum);
+  }
+
+  public static void function1(){
+    Scanner sc = new Scanner("/Users/tanweiliang/Desktop/qunluo1.txt");
+    while(sc.hasNext()){
+      String[] strings = sc.nextLine().split(" ");
+      for (String str:strings) {
+
+      }
+    }
+  }
+  public static void main(String[] args) {
+
   }
 
 }
