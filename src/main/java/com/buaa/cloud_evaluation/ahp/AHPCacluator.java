@@ -39,6 +39,24 @@ public class AHPCacluator {
     return ahpResult;
   }
 
+  public static  List<Double> fixedCommunityWeight(List<List<Double>> communityWeights) {
+    double[] CIs = new double[communityWeights.size()];
+    int index = 0;
+    for (List list:communityWeights) {
+      CIs[index++] = 0.1 - (double)list.get(0);
+    }
+    Normalization.normal(CIs);
+    List<Double> fixedWeight = new ArrayList<>();
+    for (int i = 1; i < communityWeights.get(0).size() ; i++) {
+      double cur = 0.0;
+      for (int j = 0; j < communityWeights.size(); j++) {
+        cur += communityWeights.get(j).get(i) * CIs[j];
+      }
+      fixedWeight.add(cur);
+    }
+    return fixedWeight;
+  }
+
   public static AHPResult fixAHPWeight(List<AHPRequest> historyAHPRequests) {
     List<AHPResult> ahpResults = new ArrayList<>();
     double[] CIs = new double[historyAHPRequests.size()];
@@ -145,9 +163,10 @@ public class AHPCacluator {
       w2[i] = round(w2[i], 4);
     }
 
-    System.out.println("lamta=" + lamta);
-    System.out.println("CI=" + CI);
-    System.out.println("CR=" + CR);
+//    System.out.println("lamta=" + lamta);
+//      System.out.println("CI=" + CI);
+      System.out.print(CI);
+//    System.out.println("CR=" + CR);
 
     for (int i = 0; i < N; i++) {
       weight[i] = w2[i];
@@ -157,12 +176,12 @@ public class AHPCacluator {
   public static void main(String[] args) {
     AHPRequest ahpRequest = new AHPRequest();
     List<Double> list = new ArrayList<>();
-    list.add(2.0);
-    list.add(4.0);
-    list.add(1.33333);
-    list.add(2.0);
-    list.add(0.66667);
-    list.add(0.33333);
+    list.add(6.0);
+    list.add(6.0);
+    list.add(3.0);
+    list.add(1.0);
+    list.add(0.5);
+    list.add(0.5);
     ahpRequest.setList(list);
     ahpRequest.setN(4);
     AHPResult ahpResult = getAHPResult(ahpRequest);
