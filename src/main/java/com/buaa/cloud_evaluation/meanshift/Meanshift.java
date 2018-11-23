@@ -34,13 +34,15 @@ public class Meanshift {
 
     Scanner scanner = new Scanner(new FileInputStream(file));
     try {
-      double ci = scanner.nextDouble();
-      double[] weight = new double[dimension];
-      for (int i = 0; i < dimension; i++) {
-        weight[i] = scanner.nextDouble();
+      for (;;) {
+        double ci = scanner.nextDouble();
+        double[] weight = new double[dimension];
+        for (int i = 0; i < dimension; i++) {
+          weight[i] = scanner.nextDouble();
+        }
+        cis.add(ci);
+        weights.add(weight);
       }
-      cis.add(ci);
-      weights.add(weight);
     } catch (NoSuchElementException e) {
       // Ignore
     }
