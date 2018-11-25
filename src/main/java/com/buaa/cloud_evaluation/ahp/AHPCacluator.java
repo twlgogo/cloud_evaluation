@@ -3,13 +3,15 @@ package com.buaa.cloud_evaluation.ahp;
 import com.buaa.cloud_evaluation.model.AHPRequest;
 import com.buaa.cloud_evaluation.model.AHPResult;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
 public class AHPCacluator {
-  private static double[] RI = {0.00,0.00,0.58,0.90,1.12,1.32,1.41,1.45,1.49,1.52,1.54};
+  private static double[] RI = {0.00, 0.00, 0.58, 0.90, 1.12, 1.32, 1.41, 1.45, 1.49, 1.52, 1.54};
   private static double CR = 0.0;
   private static double lamta = 0.0;
 
@@ -21,17 +23,17 @@ public class AHPCacluator {
       ahpResult.setFitCI(false);
       return ahpResult;
     }
-    int n = ahpRequest.getN() ;
-    int checkSum = n*(n - 1) /2;
+    int n = ahpRequest.getN();
+    int checkSum = n * (n - 1) / 2;
     if (checkSum != ahpRequest.getList().size()) {
       ahpResult.setFitCI(false);
       return ahpResult;
     }
-    double[][] ahpMatrix = getAHPMatrix(ahpRequest.getList(),n);
+    double[][] ahpMatrix = getAHPMatrix(ahpRequest.getList(), n);
     double[] weight = new double[n];
-    getWeight(ahpMatrix,weight,n);
+    getWeight(ahpMatrix, weight, n);
     List<Double> list = new ArrayList<>(weight.length);
-    for (double w: weight) {
+    for (double w : weight) {
       list.add(w);
     }
     ahpResult.setResList(list);
@@ -40,15 +42,15 @@ public class AHPCacluator {
     return ahpResult;
   }
 
-  public static  List<Double> fixedCommunityWeight(List<List<Double>> communityWeights) {
+  public static List<Double> fixedCommunityWeight(List<List<Double>> communityWeights) {
     double[] CIs = new double[communityWeights.size()];
     int index = 0;
-    for (List list:communityWeights) {
-      CIs[index++] = 0.1 - (double)list.get(0);
+    for (List list : communityWeights) {
+      CIs[index++] = 0.1 - (double) list.get(0);
     }
     Normalization.normal(CIs);
     List<Double> fixedWeight = new ArrayList<>();
-    for (int i = 1; i < communityWeights.get(0).size() ; i++) {
+    for (int i = 1; i < communityWeights.get(0).size(); i++) {
       double cur = 0.0;
       for (int j = 0; j < communityWeights.size(); j++) {
         cur += communityWeights.get(j).get(i) * CIs[j];
@@ -62,7 +64,7 @@ public class AHPCacluator {
     List<AHPResult> ahpResults = new ArrayList<>();
     double[] CIs = new double[historyAHPRequests.size()];
     int index = 0;
-    for (AHPRequest ahp:historyAHPRequests) {
+    for (AHPRequest ahp : historyAHPRequests) {
       AHPResult cur = getAHPResult(ahp);
       ahpResults.add(cur);
       CIs[index++] = 0.1 - cur.getCI();
@@ -70,7 +72,7 @@ public class AHPCacluator {
     Normalization.normal(CIs);
     int n = historyAHPRequests.get(0).getN();
     List<Double> fixedWeight = new ArrayList<>();
-    for (int i = 0; i < n ; i++) {
+    for (int i = 0; i < n; i++) {
       double cur = 0.0;
       for (int j = 0; j < ahpResults.size(); j++) {
         cur += ahpResults.get(j).getResList().get(i) * CIs[j];
@@ -84,11 +86,11 @@ public class AHPCacluator {
     return result;
   }
 
-  private static double[][] getAHPMatrix (List<Double> list, int N) {
+  private static double[][] getAHPMatrix(List<Double> list, int N) {
     double[][] resMatirx = new double[N][N];
     int index = 0;
     for (int i = 0; i < N; i++) {
-      for (int j = i + 1; j < N ; j++) {
+      for (int j = i + 1; j < N; j++) {
         resMatirx[i][j] = list.get(index++);
       }
     }
@@ -98,7 +100,7 @@ public class AHPCacluator {
 
     for (int i = 0; i < N; i++) {
       for (int j = 0; j < i; j++) {
-        resMatirx[i][j] = 1/resMatirx[j][i];
+        resMatirx[i][j] = 1 / resMatirx[j][i];
       }
     }
     return resMatirx;
@@ -107,11 +109,11 @@ public class AHPCacluator {
   private static double round(double v, int scale) {
     BigDecimal b = new BigDecimal(Double.toString(v));
     BigDecimal one = new BigDecimal("1");
-    return b.divide(one,scale,BigDecimal.ROUND_HALF_UP).doubleValue();
+    return b.divide(one, scale, BigDecimal.ROUND_HALF_UP).doubleValue();
   }
 
 
-  private static void  getWeight(double[][] a, double[] weight, int N) {
+  private static void getWeight(double[][] a, double[] weight, int N) {
     double[] w0 = new double[N];
     for (int i = 0; i < N; i++) {
       w0[i] = 1.0 / N;
@@ -156,7 +158,7 @@ public class AHPCacluator {
 
     lamta = round(lamta, 3);
     CI = Math.abs(round(CI, 3));
-    CR =  Math.abs(round(CR, 3));
+    CR = Math.abs(round(CR, 3));
 
     for (int i = 0; i < N; i++) {
       w0[i] = round(w0[i], 4);
@@ -166,7 +168,7 @@ public class AHPCacluator {
 
 //    System.out.println("lamta=" + lamta);
 //      System.out.println("CI=" + CI);
-      System.out.print(CI);
+    System.out.print(CI);
 //    System.out.println("CR=" + CR);
 
     for (int i = 0; i < N; i++) {
@@ -175,7 +177,7 @@ public class AHPCacluator {
   }
 
 
-  public static void function(){
+  public static void function() {
     AHPRequest ahpRequest = new AHPRequest();
     List<Double> list = new ArrayList<>();
     list.add(2.0);
@@ -190,23 +192,68 @@ public class AHPCacluator {
     List<Double> reslist = ahpResult.getResList();
     System.out.println(reslist);
     double sum = 0;
-    for (Double a:reslist) {
+    for (Double a : reslist) {
       sum += a;
     }
     System.out.println(sum);
   }
 
-  public static void function1(){
-    Scanner sc = new Scanner("/Users/tanweiliang/Desktop/qunluo1.txt");
-    while(sc.hasNext()){
-      String[] strings = sc.nextLine().split(" ");
-      for (String str:strings) {
-
+  private static double[] fixWeightAdapter(double[][] matrixs) {
+    List<List<Double>> requestList = new ArrayList<>();
+    for (int i = 0; i < matrixs.length; i++) {
+      List<Double> curList = new ArrayList<>();
+      for (int j = 0; j < matrixs[0].length; j++) {
+        curList.add(matrixs[i][j]);
       }
+      requestList.add(curList);
     }
+    List<Double> res = fixedCommunityWeight(requestList);
+    double []result = new double[res.size()];
+    int index = 0;
+    for (double d:res) {
+      result[index++] = d;
+    }
+    return result;
   }
-  public static void main(String[] args) {
 
+  public static void function1() throws Exception {
+    File file = new File("/Users/tanweiliang/Desktop/qunluo1.txt");
+    Scanner sc = new Scanner(file);
+    double[][] matrixs = new double[37][5];
+    double [][]requestMatrix;
+    int index = 0;
+    while (sc.hasNext()) {
+      String[] strings = sc.nextLine().split("\t");
+      int i = 0;
+      for (String str : strings) {
+        matrixs[index][i++] = Double.parseDouble(str);
+      }
+      index++;
+    }
+//    for (double[] arr : matrixs) {
+//      System.out.println(Arrays.toString(arr));
+//    }
+//    System.out.println();
+    for (int i = 1; i <= matrixs.length; i++) {
+      requestMatrix = Arrays.copyOf(matrixs,i);
+      double[] curRes = fixWeightAdapter(requestMatrix);
+      for (double d:curRes) {
+        System.out.print(d+"\t");
+      }
+      System.out.println();
+      //System.out.println(Arrays.toString(fixWeightAdapter(requestMatrix)));
+    }
+
+
+  }
+
+  public static void main(String[] args) {
+    try {
+      function1();
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
 }
