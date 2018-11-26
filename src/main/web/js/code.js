@@ -516,9 +516,6 @@ function setupInfoPanel() {
   }
 }
 
-let timeoutID = null;
-let time = 0;
-
 async function fillNodeValue (rNode) {
   if (rNode.node.type === TYPE_CRITERIA) {
     rNode.value = await pullItemValue(rNode.node.source, time);
@@ -534,7 +531,7 @@ async function fillNodeValue (rNode) {
   }
 }
 
-async function tick() {
+async function renderTick() {
   if (globalTree == null) {
     return;
   }
@@ -542,32 +539,10 @@ async function tick() {
   await fillNodeValue(globalTree);
   await setTree(cy, globalTree)
   layout(cy)
-
-  time += 1;
-
-  timeoutID = window.setTimeout(async function() {
-    await tick();
-  }, 1000);
-}
-
-async function onStart() {
-  if (timeoutID == null) {
-    await tick();
-  }
-}
-
-function onStop() {
-  if (timeoutID != null) {
-    window.clearTimeout(timeoutID);
-  }
-  timeoutID = null;
-  time = 0;
 }
 
 async function main () {
   await setupRenderPanel();
-  document.getElementById('button-start').onclick = async function() { await onStart(); };
-  document.getElementById('button-stop').onclick = async function() { await onStop(); };
   setupInfoPanel();
 }
 
