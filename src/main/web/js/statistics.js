@@ -107,4 +107,13 @@ function clearChart() {
   drawChart(ctx4, "动环指标", data4);
 }
 
-clearChart()
+function updateTotalValue(value) {
+  document.getElementById('total-score').innerHTML = value.toString();
+}
+
+function clearTotalValue() {
+  document.getElementById('total-score').innerHTML = 'NaN';
+}
+
+clearChart();
+clearTotalValue();

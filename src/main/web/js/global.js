@@ -23,6 +23,7 @@ async function onStart() {
 
 function onStop() {
   clearChart();
+  clearTotalValue();
 
   if (timeoutID != null) {
     window.clearTimeout(timeoutID);

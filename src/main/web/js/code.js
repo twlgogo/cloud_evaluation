@@ -540,6 +540,10 @@ async function renderTick() {
   await setTree(cy, globalTree)
   layout(cy)
 
+  if (!isNaN(globalTree.value)) {
+    updateTotalValue(`${Math.round(globalTree.value * 100) / 100}`);
+  }
+
   if (globalTree.children.length === 4) {
     const value1 = globalTree.children[0].value;
     const value2 = globalTree.children[1].value;
