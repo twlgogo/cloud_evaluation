@@ -539,6 +539,17 @@ async function renderTick() {
   await fillNodeValue(globalTree);
   await setTree(cy, globalTree)
   layout(cy)
+
+  if (globalTree.children.length === 4) {
+    const value1 = globalTree.children[0].value;
+    const value2 = globalTree.children[1].value;
+    const value3 = globalTree.children[2].value;
+    const value4 = globalTree.children[3].value;
+
+    if (!isNaN(value1) && !isNaN(value2) && !isNaN(value3) && !isNaN(value4)) {
+      updateChart(time, value1, value2, value3, value4);
+    }
+  }
 }
 
 async function main () {

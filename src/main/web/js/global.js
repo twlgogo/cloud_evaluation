@@ -22,6 +22,8 @@ async function onStart() {
 }
 
 function onStop() {
+  clearChart();
+
   if (timeoutID != null) {
     window.clearTimeout(timeoutID);
   }
