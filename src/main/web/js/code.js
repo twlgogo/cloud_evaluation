@@ -516,9 +516,6 @@ function setupInfoPanel() {
   }
 }
 
-let timeoutID = null;
-let time = 0;
-
 async function fillNodeValue (rNode) {
   if (rNode.node.type === TYPE_CRITERIA) {
     rNode.value = await pullItemValue(rNode.node.source, time);
@@ -534,7 +531,7 @@ async function fillNodeValue (rNode) {
   }
 }
 
-async function tick() {
+async function renderTick() {
   if (globalTree == null) {
     return;
   }
@@ -543,31 +540,24 @@ async function tick() {
   await setTree(cy, globalTree)
   layout(cy)
 
-  time += 1;
-
-  timeoutID = window.setTimeout(async function() {
-    await tick();
-  }, 1000);
-}
-
-async function onStart() {
-  if (timeoutID == null) {
-    await tick();
+  if (!isNaN(globalTree.value)) {
+    updateTotalValue(`${Math.round(globalTree.value * 100) / 100}`);
   }
-}
 
-function onStop() {
-  if (timeoutID != null) {
-    window.clearTimeout(timeoutID);
+  if (globalTree.children.length === 4) {
+    const value1 = globalTree.children[0].value;
+    const value2 = globalTree.children[1].value;
+    const value3 = globalTree.children[2].value;
+    const value4 = globalTree.children[3].value;
+
+    if (!isNaN(value1) && !isNaN(value2) && !isNaN(value3) && !isNaN(value4)) {
+      updateChart(time, value1, value2, value3, value4);
+    }
   }
-  timeoutID = null;
-  time = 0;
 }
 
 async function main () {
   await setupRenderPanel();
-  document.getElementById('button-start').onclick = async function() { await onStart(); };
-  document.getElementById('button-stop').onclick = async function() { await onStop(); };
   setupInfoPanel();
 }
 
