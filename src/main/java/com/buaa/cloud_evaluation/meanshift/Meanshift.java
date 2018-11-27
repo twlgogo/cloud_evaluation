@@ -1,6 +1,8 @@
 package com.buaa.cloud_evaluation.meanshift;
 
 import com.buaa.cloud_evaluation.ahp.AHPCacluator;
+import com.buaa.cloud_evaluation.model.AHPRequest;
+import com.buaa.cloud_evaluation.model.AHPResult;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -50,6 +52,37 @@ public class Meanshift {
     return new Meanshift(dimension, cis, weights);
   }
 
+  @Nullable
+  public static Meanshift newInstance(List<AHPRequest> requests) {
+    List<AHPResult> results = requests.stream().map(AHPCacluator::getAHPResult).collect(Collectors.toList());
+
+    List<Double> cis = new ArrayList<>();
+    List<double[]> weights = new ArrayList<>();
+
+    for (AHPResult result : results) {
+      if (!result.isFitCI()) {
+        return null;
+      }
+
+      cis.add(result.getCI());
+
+      List<Double> res = result.getResList();
+      double[] weight = new double[res.size()];
+      for (int i = 0; i < res.size(); i++) {
+        weight[i] = res.get(i);
+      }
+      weights.add(weight);
+    }
+
+    return new Meanshift(weights.get(0).length, cis, weights);
+  }
+
+  private static double[] newDoubleArray(int size, double init) {
+    double[] array = new double[size];
+    Arrays.fill(array, init);
+    return array;
+  }
+
   public Meanshift(
       int dimension,
       List<Double> cis,
@@ -59,8 +92,8 @@ public class Meanshift {
         dimension,
         cis,
         weights,
-        new double[] {0, 0, 0, 0},
-        new double[] {1, 1, 1, 1},
+        newDoubleArray(dimension, 0),
+        newDoubleArray(dimension, 1),
         0.1,
         0.1,
         0.001,

@@ -1,6 +1,7 @@
 package com.buaa.cloud_evaluation.controller;
 
 import com.buaa.cloud_evaluation.ahp.AHPCacluator;
+import com.buaa.cloud_evaluation.meanshift.Meanshift;
 import com.buaa.cloud_evaluation.model.AHPRequest;
 import com.buaa.cloud_evaluation.model.AHPResult;
 import com.buaa.cloud_evaluation.model.ApiResultModule;
@@ -10,7 +11,9 @@ import com.buaa.cloud_evaluation.model.RelationNodeModel;
 import com.buaa.cloud_evaluation.service.ApiService;
 import com.buaa.cloud_evaluation.util.Serialization;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -248,15 +251,25 @@ public class ApiController {
     List<NodeValueModel> list = new ArrayList<>(rNode.getNode().getHistoryValues());
     list.add(historyValue);
     List<AHPRequest> requests = list.stream().map(NodeValueModel::toAHPRequest).collect(Collectors.toList());
-    AHPResult fixResult = AHPCacluator.fixAHPWeight(requests);
-    if (!fixResult.isFitCI()) {
+    Meanshift meanshift = Meanshift.newInstance(requests);
+    if (meanshift == null) {
       return ApiResultModule.error("No fit CI");
+    }
+    List<Meanshift.Result> results = meanshift.meanshift();
+    int atLeastCount = results.stream().max(Comparator.comparingInt(i -> i.count)).get().count / 3;
+    List<Meanshift.Result> invalidResults = results.stream().filter(x -> x.count > atLeastCount).collect(Collectors.toList());
+    int maxCount = invalidResults.stream().mapToInt(x -> x.count).sum();
+    double[] fixResult = new double[invalidResults.get(0).weight.size()];
+    for (Meanshift.Result invalidResult : invalidResults) {
+      for (int i = 0; i < invalidResult.weight.size(); i++) {
+        fixResult[i] = invalidResult.weight.get(i) * invalidResult.count / maxCount;
+      }
     }
 
     NodeValueModel currentValue = new NodeValueModel();
     currentValue.setN(n);
     currentValue.setMatrix(null);
-    currentValue.setVector(fixResult.getResList());
+    currentValue.setVector(Arrays.stream(fixResult).boxed().collect(Collectors.toList()));
 
     // Add new history value
     historyValue = service.addNodeValue(historyValue);
@@ -356,6 +369,6 @@ public class ApiController {
       int timestamp
   ) {
     // TODO
-    return ApiResultModule.success(Math.random());
+    return ApiResultModule.success(0.9 + 0.1 * Math.random());
   }
 }
