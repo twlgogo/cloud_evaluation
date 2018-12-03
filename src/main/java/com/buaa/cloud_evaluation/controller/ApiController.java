@@ -10,6 +10,9 @@ import com.buaa.cloud_evaluation.model.NodeValueModel;
 import com.buaa.cloud_evaluation.model.RelationNodeModel;
 import com.buaa.cloud_evaluation.service.ApiService;
 import com.buaa.cloud_evaluation.util.Serialization;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -280,6 +283,21 @@ public class ApiController {
     newHistoryValueIds.add(historyValue.getId());
     NodeModel node = service.updateValueOfNode(nodeId, Serialization.intListToString(newHistoryValueIds), currentValue.getId());
     rNode.setNode(node);
+
+    // Add the matrix into file if it's root
+    if (nodeId == 1) {
+      try (Writer writer = new FileWriter("vectors.txt", true)) {
+        writer.write("\n");
+        writer.write(Double.toString(matrix.get(0)));
+        for (int i = 1; i < matrix.size(); i++) {
+          writer.write("\t");
+          writer.write(Double.toString(matrix.get(i)));
+        }
+        writer.write("\n");
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
 
     return ApiResultModule.success(null);
   }
