@@ -193,6 +193,7 @@ public class Meanshift {
 
     List<Result> results1 = new ArrayList<>();
 
+    int k = 0;
     for (List<Integer> index : indexs) {
       List<List<Double>> requests = new ArrayList<>();
       for (int i : index) {
@@ -205,6 +206,8 @@ public class Meanshift {
       Result result = new Result();
       result.count = index.size();
       result.weight = AHPCacluator.fixedCommunityWeight(requests);
+      result.center = Arrays.stream(clusterWeights.get(k++)).boxed().collect(Collectors.toList());
+      result.elements = requests;
       results1.add(result);
     }
 
@@ -281,5 +284,7 @@ public class Meanshift {
   public static class Result {
     public int count;
     public List<Double> weight;
+    public List<Double> center;
+    public List<List<Double>> elements;
   }
 }
