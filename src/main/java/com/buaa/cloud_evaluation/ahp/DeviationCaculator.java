@@ -37,6 +37,7 @@ public class DeviationCaculator {
         return Math.sqrt(dVar / m);
     }
 
+
     public static void main(String[] args) {
         Double[] data;
         try {
@@ -63,6 +64,22 @@ public class DeviationCaculator {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
+    //标准差σ=sqrt(s^2)
+    public static double StandardDiviation(List<Double> x) {
+        int m = x.size();
+        double sum = 0;
+        for (int i = 0; i < m; i++) {//求和
+            sum += x.get(i);
+        }
+        double dAve = sum / m;//求平均值
+        double dVar = 0;
+        for (int i = 0; i < m; i++) {//求方差
+            dVar += (x.get(i) - dAve) * (x.get(i) - dAve);
+        }
+        return Math.sqrt(dVar / m);
     }
 }
+
+
