@@ -168,7 +168,7 @@ public class AHPCacluator {
 
 //    System.out.println("lamta=" + lamta);
 //      System.out.println("CI=" + CI);
-    System.out.print(CI);
+//    System.out.print(CI);
 //    System.out.println("CR=" + CR);
 
     for (int i = 0; i < N; i++) {
