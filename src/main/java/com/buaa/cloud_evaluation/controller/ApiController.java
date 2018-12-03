@@ -265,7 +265,7 @@ public class ApiController {
     double[] fixResult = new double[invalidResults.get(0).weight.size()];
     for (Meanshift.Result invalidResult : invalidResults) {
       for (int i = 0; i < invalidResult.weight.size(); i++) {
-        fixResult[i] = invalidResult.weight.get(i) * invalidResult.count / maxCount;
+        fixResult[i] += invalidResult.weight.get(i) * invalidResult.count / maxCount;
       }
     }
 
