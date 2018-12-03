@@ -1,6 +1,7 @@
 package com.buaa.cloud_evaluation.tool;
 
 import com.buaa.cloud_evaluation.ahp.AHPCacluator;
+import com.buaa.cloud_evaluation.ahp.DeviationCaculator;
 import com.buaa.cloud_evaluation.meanshift.Meanshift;
 import com.buaa.cloud_evaluation.model.AHPRequest;
 import com.buaa.cloud_evaluation.model.AHPResult;
@@ -27,6 +28,7 @@ public class VectorImporter {
         new File("meanshift.txt"),
         "meanshift_group_%d.txt",
         "meanshift_group_progress_%d.txt",
+        "meanshift_group_standard_diviation_%d.txt",
         new File("meanshift_result.txt"),
         new File("meanshift_final_result.txt")
     );
@@ -125,15 +127,36 @@ public class VectorImporter {
 
   private static void writeMeanshiftProgress(
       String groupProgressFilename,
+      String groupStandardDiviationFilename,
       List<Meanshift.Result> results
   ) throws IOException {
     for (int i = 0; i < results.size(); i++) {
       Meanshift.Result result = results.get(i);
+      List<List<Double>> progress = new ArrayList<>();
+
       File groupFile = new File(String.format(groupProgressFilename, i));
       try (Writer groupWriter = new FileWriter(groupFile)) {
         for (int j = 0; j < result.elements.size(); j++) {
-          writeDoubleList(groupWriter, AHPCacluator.fixedCommunityWeight(result.elements.subList(0, j + 1)));
+          List<Double> weight = AHPCacluator.fixedCommunityWeight(result.elements.subList(0, j + 1));
+          progress.add(weight);
+
+          writeDoubleList(groupWriter, weight);
           groupWriter.write("\n");
+        }
+      }
+
+      File sdFile = new File(String.format(groupStandardDiviationFilename, i));
+      try (Writer sdWriter = new FileWriter(sdFile)) {
+        for (int j = 0; j < result.elements.size(); j++) {
+          List<List<Double>> temp = progress.subList(0, j + 1);
+          sdWriter.write(Double.toString(DeviationCaculator.StandardDiviation(temp.stream().map(x -> x.get(0)).collect(Collectors.toList()))));
+          sdWriter.write("\t");
+          sdWriter.write(Double.toString(DeviationCaculator.StandardDiviation(temp.stream().map(x -> x.get(1)).collect(Collectors.toList()))));
+          sdWriter.write("\t");
+          sdWriter.write(Double.toString(DeviationCaculator.StandardDiviation(temp.stream().map(x -> x.get(2)).collect(Collectors.toList()))));
+          sdWriter.write("\t");
+          sdWriter.write(Double.toString(DeviationCaculator.StandardDiviation(temp.stream().map(x -> x.get(3)).collect(Collectors.toList()))));
+          sdWriter.write("\n");
         }
       }
     }
@@ -177,6 +200,7 @@ public class VectorImporter {
       File meanshiftFile,
       String meanshiftGroupFilename,
       String meanshiftGroupProgressFilename,
+      String meanshiftGroupStandardDiviationFilename,
       File meanshiftGroupResultFile,
       File meanshiftFinalResultFile
   ) throws IOException {
@@ -187,7 +211,7 @@ public class VectorImporter {
 
     List<Meanshift.Result> meanshiftResults = Meanshift.newInstance(requests).meanshift();
     writeMeanshiftResults(meanshiftFile, meanshiftGroupFilename, meanshiftResults);
-    writeMeanshiftProgress(meanshiftGroupProgressFilename, meanshiftResults);
+    writeMeanshiftProgress(meanshiftGroupProgressFilename, meanshiftGroupStandardDiviationFilename, meanshiftResults);
     writeMeanshiftResult(meanshiftGroupResultFile, meanshiftResults);
     writeMeanshiftFinalResult(meanshiftFinalResultFile, meanshiftResults);
   }
