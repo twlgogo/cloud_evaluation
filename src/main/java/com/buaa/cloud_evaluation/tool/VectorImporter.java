@@ -32,6 +32,16 @@ public class VectorImporter {
         new File("meanshift_result.txt"),
         new File("meanshift_final_result.txt")
     );
+
+
+//    importAHPResults(
+//        new File("ahp_results.txt"),
+//        new File("meanshift.txt"),
+//        "meanshift_group_%d.txt",
+//        "meanshift_group_progress_%d.txt",
+//        "meanshift_group_standard_diviation_%d.txt",
+//        new File("meanshift_result.txt"),
+//        new File("meanshift_final_result.txt"));
   }
 
   private static List<AHPRequest> readVectorsFile(File file) throws FileNotFoundException {
@@ -210,6 +220,56 @@ public class VectorImporter {
     writeAHPResults(ahpResultsFile, results);
 
     List<Meanshift.Result> meanshiftResults = Meanshift.newInstance(requests).meanshift();
+    writeMeanshiftResults(meanshiftFile, meanshiftGroupFilename, meanshiftResults);
+    writeMeanshiftProgress(meanshiftGroupProgressFilename, meanshiftGroupStandardDiviationFilename, meanshiftResults);
+    writeMeanshiftResult(meanshiftGroupResultFile, meanshiftResults);
+    writeMeanshiftFinalResult(meanshiftFinalResultFile, meanshiftResults);
+  }
+
+  private static List<AHPResult> readAHPResultsFile(File file) throws FileNotFoundException {
+    Scanner scanner = new Scanner(new FileInputStream(file));
+    List<AHPResult> results = new ArrayList<>();
+
+    try {
+      for (;;) {
+        double ci = scanner.nextDouble();
+        double v1 = scanner.nextDouble();
+        double v2 = scanner.nextDouble();
+        double v3 = scanner.nextDouble();
+        double v4 = scanner.nextDouble();
+
+        AHPResult result = new AHPResult();
+        result.setN(4);
+        result.setFitCI(true);
+        result.setResList(Arrays.asList(v1, v2, v3, v4));
+        result.setCI(ci);
+
+        results.add(result);
+      }
+    } catch (NoSuchElementException e) {
+      // Ignore
+    }
+
+    if (results.isEmpty()) {
+      throw new IllegalStateException("No AHPResult");
+    }
+
+    return results;
+  }
+
+
+  private static void importAHPResults(
+      File ahpResultsFile,
+      File meanshiftFile,
+      String meanshiftGroupFilename,
+      String meanshiftGroupProgressFilename,
+      String meanshiftGroupStandardDiviationFilename,
+      File meanshiftGroupResultFile,
+      File meanshiftFinalResultFile
+  ) throws IOException {
+    List<AHPResult> results = readAHPResultsFile(ahpResultsFile);
+
+    List<Meanshift.Result> meanshiftResults = Meanshift.newInstance2(results).meanshift();
     writeMeanshiftResults(meanshiftFile, meanshiftGroupFilename, meanshiftResults);
     writeMeanshiftProgress(meanshiftGroupProgressFilename, meanshiftGroupStandardDiviationFilename, meanshiftResults);
     writeMeanshiftResult(meanshiftGroupResultFile, meanshiftResults);
