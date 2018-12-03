@@ -55,7 +55,11 @@ public class Meanshift {
   @Nullable
   public static Meanshift newInstance(List<AHPRequest> requests) {
     List<AHPResult> results = requests.stream().map(AHPCacluator::getAHPResult).collect(Collectors.toList());
+    return newInstance2(results);
+  }
 
+  @Nullable
+  public static Meanshift newInstance2(List<AHPResult> results) {
     List<Double> cis = new ArrayList<>();
     List<double[]> weights = new ArrayList<>();
 
