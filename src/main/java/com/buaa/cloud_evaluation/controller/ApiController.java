@@ -1,6 +1,7 @@
 package com.buaa.cloud_evaluation.controller;
 
 import com.buaa.cloud_evaluation.ahp.AHPCacluator;
+import com.buaa.cloud_evaluation.item.ItemScoreGetter;
 import com.buaa.cloud_evaluation.meanshift.Meanshift;
 import com.buaa.cloud_evaluation.model.AHPRequest;
 import com.buaa.cloud_evaluation.model.AHPResult;
@@ -34,10 +35,12 @@ public class ApiController {
 
   private final ApiService service;
   private RelationNodeModel root;
+  private ItemScoreGetter itemScoreGetter;
 
   @Autowired
   public ApiController(ApiService service) {
     this.service = service;
+    this.itemScoreGetter = new ItemScoreGetter();
 
     RelationNodeModel root;
     try {
@@ -386,7 +389,6 @@ public class ApiController {
       int itemId,
       int timestamp
   ) {
-    // TODO
-    return ApiResultModule.success(0.9 + 0.1 * Math.random());
+    return ApiResultModule.success(itemScoreGetter.getScore(itemId, timestamp));
   }
 }

@@ -11,7 +11,9 @@ public class CloudEvaluationApplication {
 
   public static void main(String[] args) {
     String dbPath = "src/main/resources/db/cloud_evaluate.db";
+    String itemDbPath = "src/main/resources/db/cloud_evaluate_item.db";
     DatabaseGenerator.generate(dbPath);
+    DatabaseGenerator.generateItemDataDB(itemDbPath);
 
     SpringApplication.run(CloudEvaluationApplication.class, args);
   }

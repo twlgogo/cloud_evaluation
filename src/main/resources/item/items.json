@@ -1,9 +1,27 @@
 [
   {
-    "id": 0,
+    "id": 1,
+    "type": 1,
+    "table_name": "table_1",
+    "item_name": "电能",
+    "max": 50,
+    "min": 20,
+    "direction": -1
+  },
+  {
+    "id": 2,
+    "type": 1,
+    "table_name": "table_2",
+    "item_name": "UPS可用时间",
+    "max": 50,
+    "min": 20,
+    "direction": -1
+  },
+  {
+    "id": 3,
     "type": 0,
-    "table_name": "item1_source",
-    "item_name": "AAA",
+    "table_name": "table_3",
+    "item_name": "电流",
     "max": 50,
     "min": 20,
     "direction": -1
