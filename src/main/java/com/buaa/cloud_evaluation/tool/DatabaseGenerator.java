@@ -1,10 +1,19 @@
 package com.buaa.cloud_evaluation.tool;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.Reader;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Random;
 
 public class DatabaseGenerator {
 
@@ -82,41 +91,109 @@ public class DatabaseGenerator {
     Connection connection = null;
     try {
       connection = DriverManager.getConnection("jdbc:sqlite:" + path);
+      Connection finalConnection = connection;
       Statement statement = connection.createStatement();
       statement.setQueryTimeout(30);
 
       createUserTable(statement,"user_table");
-      insertUserItem(statement,"user_table","admin","admin");
+      insertUserItem(statement,"user_table", "admin","admin");
+      statement.close();
 
-      createDispersedTable(statement, "table_1");
-      insertDispersedEntry(statement, "table_1", 3, 0);
-      insertDispersedEntry(statement, "table_1", 5, 1);
+      try {
+        Reader reader = new FileReader("src/main/resources/item/items.json");
+        Gson gson = new GsonBuilder().create();
+        JsonArray ja = gson.fromJson(reader, JsonArray.class);
 
-      createDispersedTable(statement, "table_2");
-      insertDispersedEntry(statement, "table_2", 6, 0);
-      insertDispersedEntry(statement, "table_2", 9, 1);
+        long timestamp = 1541491200;
+        Random random = new Random();
 
-      createContinuousTable(statement, "table_3");
-      insertContinuousEntry(statement, "table_3", 0, 0.213);
-      insertContinuousEntry(statement, "table_3", 1, 0.245324);
-      insertContinuousEntry(statement, "table_3", 2, 0.342523);
-      insertContinuousEntry(statement, "table_3", 3, 0.41233);
-      insertContinuousEntry(statement, "table_3", 4, 0.41233);
-      insertContinuousEntry(statement, "table_3", 5, 0.41233);
-      insertContinuousEntry(statement, "table_3", 6, 0.41233);
-      insertContinuousEntry(statement, "table_3", 7, 0.41233);
+        ja.forEach(child -> {
 
-      createWindowTable(statement, "table_7");
-      insertWindowEntry(statement, "table_7", 0, 0);
-      insertWindowEntry(statement, "table_7", 1, 1);
-      insertWindowEntry(statement, "table_7", 2, 0);
-      insertWindowEntry(statement, "table_7", 3, 1);
-      insertWindowEntry(statement, "table_7", 4, 0);
-      insertWindowEntry(statement, "table_7", 5, 1);
-      insertWindowEntry(statement, "table_7", 6, 0);
-      insertWindowEntry(statement, "table_7", 7, 1);
-      insertWindowEntry(statement, "table_7", 8, 0);
-      insertWindowEntry(statement, "table_7", 9, 1);
+          try {
+            JsonObject jo = child.getAsJsonObject();
+            int id = jo.get("id").getAsInt();
+            int type = jo.get("type").getAsInt();
+            String tableName = jo.get("table_name").getAsString();
+            String itemName = jo.get("item_name").getAsString();
+
+            switch (type) {
+              case 0: {
+
+                Statement statement1 = finalConnection.createStatement();
+                createContinuousTable(statement1, tableName);
+                statement1.close();
+
+                double max = jo.get("max").getAsDouble();
+                double min = jo.get("min").getAsDouble();
+                double newMax = max + (max - min) / 100 * 0.5;
+                double newMin = min - (max - min) / 100 * 0.5;
+
+                String query = "insert into " + tableName + " (stamp, value) values (?, ?)";
+                finalConnection.setAutoCommit(false);
+                PreparedStatement ps = finalConnection.prepareStatement(query);
+                for (long i = timestamp; i < 6000; i++) {
+                  double value = newMin + random.nextDouble() * (newMax - newMin);
+                  ps.setLong(1, i);
+                  ps.setDouble(2, value);
+                  ps.addBatch();
+                }
+                ps.executeBatch();
+                finalConnection.setAutoCommit(true);
+                break;
+              }
+              case 1: {
+                createDispersedTable(statement, tableName);
+
+                String query = "insert into " + tableName + " (stamp, value) values (?, ?)";
+                finalConnection.setAutoCommit(false);
+                PreparedStatement ps = finalConnection.prepareStatement(query);
+                for (long i = timestamp; i < 6000; i++) {
+                  int value;
+                  if (random.nextDouble() <= 0.01) {
+                    value = 0;
+                  } else {
+                    value = 1;
+                  }
+                  ps.setLong(1, i);
+                  ps.setInt(2, value);
+                  ps.addBatch();
+                }
+                ps.executeBatch();
+                finalConnection.setAutoCommit(true);
+                break;
+              }
+              case 2: {
+                createWindowTable(statement, tableName);
+
+                double max = jo.get("max").getAsDouble();
+                int windowSize = jo.get("window_size").getAsInt();
+
+                String query = "insert into " + tableName + " (stamp, value) values (?, ?)";
+                finalConnection.setAutoCommit(false);
+                PreparedStatement ps = finalConnection.prepareStatement(query);
+                for (long i = timestamp; i < 6000; i++) {
+                  int value;
+                  if (random.nextDouble() <= 0.01 / windowSize * max) {
+                    value = 0;
+                  } else {
+                    value = 1;
+                  }
+                  ps.setLong(1, i);
+                  ps.setInt(2, value);
+                  ps.addBatch();
+                }
+                ps.executeBatch();
+                finalConnection.setAutoCommit(true);
+                break;
+              }
+            }
+          } catch (SQLException e) {
+            throw new RuntimeException(e);
+          }
+        });
+      } catch (FileNotFoundException e) {
+        throw new RuntimeException(e);
+      }
 
     } catch(SQLException e) {
       e.printStackTrace();
