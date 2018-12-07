@@ -60,6 +60,11 @@ public class ItemScoreGetter {
 
   public  double getScore(int itemId, int timestamp){
     Item curItem = items.get(itemId);
+
+    if (curItem == null) {
+      throw new RuntimeException("Can't find item with id: " + itemId);
+    }
+
     return curItem.getScore(timestamp);
   }
 
