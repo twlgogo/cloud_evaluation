@@ -85,6 +85,9 @@ public class DatabaseGenerator {
       Statement statement = connection.createStatement();
       statement.setQueryTimeout(30);
 
+      createUserTable(statement,"user_table");
+      insertUserItem(statement,"user_table","admin","admin");
+
       createDispersedTable(statement, "table_1");
       insertDispersedEntry(statement, "table_1", 3, 0);
       insertDispersedEntry(statement, "table_1", 5, 1);
@@ -161,5 +164,17 @@ public class DatabaseGenerator {
 
   private static void insertWindowEntry(Statement statement, String tableName, long stamp, int value) throws SQLException {
     statement.executeUpdate("insert into " + tableName + " (stamp, value) values (" + stamp + ", " + value + ")");
+  }
+
+  private static void createUserTable(Statement statement,String tableName) throws SQLException {
+    statement.executeUpdate("create table " + tableName + " ("
+            + "id integer primary key autoincrement,"
+            + "user_name varchar ,"
+            + "pass_word varchar " //用户名、密码
+            + ")");
+  }
+
+  private static void insertUserItem(Statement statement, String tableName, String userName, String passWord) throws SQLException {
+    statement.executeUpdate("insert into " + tableName + " (user_name, pass_word) values (" + userName + ", " + passWord + ")");
   }
 }
