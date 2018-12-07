@@ -9,6 +9,9 @@ const data3 = []
 const data4 = []
 const labels = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
+// 11月6日下午4点
+// 1541491200
+
 function drawChart (ctx, name, data) {
   new Chart(ctx, {
     // The type of chart we want to create
@@ -36,7 +39,7 @@ function drawChart (ctx, name, data) {
       scales: {
         yAxes: [{
           ticks: {
-            min: 0.7,
+            min: 0,
             max: 1
           }
         }]
