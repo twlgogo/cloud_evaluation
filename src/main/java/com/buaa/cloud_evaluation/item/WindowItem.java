@@ -3,20 +3,29 @@ package com.buaa.cloud_evaluation.item;
 
 class WindowItem extends Item {
 
+  private double max;
+  private int windowSize;
 
-  public WindowItem(int itemId, int direction, int type, double max, double min, String itemName, String tableName) {
+  public WindowItem(int itemId, int type, String itemName, String tableName, double max, int windowSize) {
     this.itemId = itemId;
-    this.direction = direction;
     this.type = type;
     this.max = max;
-    this.min = min;
     this.itemName = itemName;
     this.tableName = tableName;
+    this.windowSize = windowSize;
   }
-
 
   @Override
   public double getScore(int timestamp){
-    return DbQuery.getWindowCount(tableName, timestamp, 10) > 3 ? 1.0 : 0.0;
+    int count = DbQuery.getWindowCount(tableName, timestamp, windowSize);
+
+    double score;
+    if (count >= max) {
+      score = 0.0;
+    } else {
+      score = (max - count) / (float) max;
+    }
+
+    return score;
   }
 }

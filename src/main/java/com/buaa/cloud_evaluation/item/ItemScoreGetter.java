@@ -26,21 +26,25 @@ public class ItemScoreGetter {
         int type = jo.get("type").getAsInt();
         String tableName = jo.get("table_name").getAsString();
         String itemName = jo.get("item_name").getAsString();
-        double max = jo.get("max").getAsDouble();
-        double min = jo.get("min").getAsDouble();
-        int direction = jo.get("direction").getAsInt();
 
         Item item;
         switch (type) {
-          case 0:
-            item = new ContinuousItem(id, direction, type, max, min, itemName, tableName);
+          case 0: {
+            double max = jo.get("max").getAsDouble();
+            double min = jo.get("min").getAsDouble();
+            int direction = jo.get("direction").getAsInt();
+            item = new ContinuousItem(id, type, itemName, tableName, max, min, direction);
             break;
+          }
           case 1:
-            item = new DispersedItem(id, direction, type, max, min, itemName, tableName);
+            item = new DispersedItem(id, type, itemName, tableName);
             break;
-          case 2:
-            item = new WindowItem(id, direction, type, max, min, itemName, tableName);
+          case 2: {
+            double max = jo.get("max").getAsDouble();
+            int windowSize = jo.get("window_size").getAsInt();
+            item = new WindowItem(id, type, itemName, tableName, max, windowSize);
             break;
+          }
           default:
             throw new IllegalStateException("Unknown type: " + type);
         }
@@ -60,6 +64,6 @@ public class ItemScoreGetter {
   }
 
   public static void main(String[] args) {
-    System.out.println(new ItemScoreGetter().items);
+    ItemScoreGetter getter = new ItemScoreGetter();
   }
 }

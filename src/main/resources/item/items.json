@@ -3,19 +3,13 @@
     "id": 1,
     "type": 1,
     "table_name": "table_1",
-    "item_name": "电能",
-    "max": 50,
-    "min": 20,
-    "direction": -1
+    "item_name": "电能"
   },
   {
     "id": 2,
     "type": 1,
     "table_name": "table_2",
-    "item_name": "UPS可用时间",
-    "max": 50,
-    "min": 20,
-    "direction": -1
+    "item_name": "UPS可用时间"
   },
   {
     "id": 3,
@@ -25,5 +19,13 @@
     "max": 50,
     "min": 20,
     "direction": -1
+  },
+  {
+    "id": 7,
+    "type": 2,
+    "table_name": "table_7",
+    "item_name": "丢包个数",
+    "max": 50,
+    "window_size": 5
   }
 ]

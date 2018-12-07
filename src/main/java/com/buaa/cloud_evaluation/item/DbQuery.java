@@ -54,7 +54,7 @@ public class DbQuery {
   public static int getWindowCount(String tableName, long timestamp, long window) {
     try (Statement statement = connection.createStatement()) {
       ResultSet rs = statement.executeQuery("select value from " + tableName
-          + " where stamp <= " + timestamp + " and stamp >= " + (timestamp - window));
+          + " where stamp <= " + timestamp + " and stamp >= " + (timestamp - window) + " and value = 1");
       int count = 0;
       while (rs.next()) {
         count++;

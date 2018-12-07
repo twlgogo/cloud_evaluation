@@ -103,6 +103,18 @@ public class DatabaseGenerator {
       insertContinuousEntry(statement, "table_3", 6, 0.41233);
       insertContinuousEntry(statement, "table_3", 7, 0.41233);
 
+      createWindowTable(statement, "table_7");
+      insertWindowEntry(statement, "table_7", 0, 0);
+      insertWindowEntry(statement, "table_7", 1, 1);
+      insertWindowEntry(statement, "table_7", 2, 0);
+      insertWindowEntry(statement, "table_7", 3, 1);
+      insertWindowEntry(statement, "table_7", 4, 0);
+      insertWindowEntry(statement, "table_7", 5, 1);
+      insertWindowEntry(statement, "table_7", 6, 0);
+      insertWindowEntry(statement, "table_7", 7, 1);
+      insertWindowEntry(statement, "table_7", 8, 0);
+      insertWindowEntry(statement, "table_7", 9, 1);
+
     } catch(SQLException e) {
       e.printStackTrace();
     } finally {
@@ -143,7 +155,7 @@ public class DatabaseGenerator {
     statement.executeUpdate("create table " + tableName + " ("
         + "id integer primary key autoincrement,"
         + "stamp integer,"
-        + "value integer" // always 1
+        + "value integer" // 0 or 1
         + ")");
   }
 
