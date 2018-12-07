@@ -17,7 +17,7 @@ public class ApiResultModule<VALUE> {
 
   public static <VALUE> ApiResultModule<VALUE> error(String error) {
     ApiResultModule<VALUE> result = new ApiResultModule<>();
-    result.setSuccess(true);
+    result.setSuccess(false);
     result.setError(error);
     return result;
   }
