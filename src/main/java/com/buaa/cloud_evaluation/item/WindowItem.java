@@ -17,10 +17,6 @@ class WindowItem extends Item {
 
   @Override
   public double getScore(int timestamp){
-    //todo get value from database
-    double value = 22;
-    double score = 0.0;
-
-    return score;
+    return DbQuery.getWindowCount(tableName, timestamp, 10) > 3 ? 1.0 : 0.0;
   }
 }

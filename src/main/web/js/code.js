@@ -189,7 +189,7 @@ function layout(cy) {
     name: 'dagre'
   });
   layout.run();
-  cy.fit(150);
+  cy.fit(-150);
 }
 
 function installCytoscape() {
@@ -197,7 +197,7 @@ function installCytoscape() {
     container: document.getElementById('render-panel'),
 
     autoungrabify: true,
-    userPanningEnabled: false,
+    userPanningEnabled: true,
 
     layout: {
       name: 'dagre'

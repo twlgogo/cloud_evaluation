@@ -36,6 +36,9 @@ public class ItemScoreGetter {
             item = new ContinuousItem(id, direction, type, max, min, itemName, tableName);
             break;
           case 1:
+            item = new DispersedItem(id, direction, type, max, min, itemName, tableName);
+            break;
+          case 2:
             item = new WindowItem(id, direction, type, max, min, itemName, tableName);
             break;
           default:

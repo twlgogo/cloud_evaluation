@@ -14,9 +14,6 @@ public class DispersedItem extends Item {
 
   @Override
   public double getScore(int timestamp){
-    //todo get value from database
-    double score = 0.0;
-
-    return score;
+    return DbQuery.getDispersedState(tableName, timestamp) ? 1.0 : 0.0;
   }
 }

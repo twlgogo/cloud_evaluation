@@ -36,7 +36,7 @@ function drawChart (ctx, name, data) {
       scales: {
         yAxes: [{
           ticks: {
-            min: 0,
+            min: 0.7,
             max: 1
           }
         }]
