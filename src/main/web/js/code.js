@@ -184,12 +184,29 @@ function setTree(cy, tree) {
   }
 }
 
+let firstLayout = true;
+let pan = null;
+let zoom = null;
+
 function layout(cy) {
+  if (firstLayout) {
+    firstLayout = false;
+  } else {
+    pan = cy.pan();
+    zoom = cy.zoom();
+  }
+
   const layout = cy.elements().layout({
     name: 'dagre'
   });
   layout.run();
-  cy.fit(-150);
+
+  if (pan == null || zoom == null) {
+    cy.fit(-150);
+  } else {
+    cy.pan(pan);
+    cy.zoom(zoom);
+  }
 }
 
 function installCytoscape() {
