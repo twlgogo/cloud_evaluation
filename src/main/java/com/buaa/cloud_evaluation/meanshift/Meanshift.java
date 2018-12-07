@@ -3,17 +3,14 @@ package com.buaa.cloud_evaluation.meanshift;
 import com.buaa.cloud_evaluation.ahp.AHPCacluator;
 import com.buaa.cloud_evaluation.model.AHPRequest;
 import com.buaa.cloud_evaluation.model.AHPResult;
+import org.springframework.lang.Nullable;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import org.springframework.lang.Nullable;
 
 public class Meanshift {
 
@@ -101,7 +98,7 @@ public class Meanshift {
         0.1,
         0.1,
         0.001,
-        0.02);
+        0.001);
   }
 
   public Meanshift(
