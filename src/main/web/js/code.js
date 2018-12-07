@@ -535,7 +535,7 @@ function setupInfoPanel() {
 
 async function fillNodeValue (rNode) {
   if (rNode.node.type === TYPE_CRITERIA) {
-    rNode.value = await pullItemValue(rNode.node.source, time);
+    rNode.value = await pullItemValue(rNode.node.source, time + 1541491200);
   } else if (rNode.children.length === 0) {
     rNode.value = NaN;
   } else {

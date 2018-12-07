@@ -131,7 +131,7 @@ public class DatabaseGenerator {
                 String query = "insert into " + tableName + " (stamp, value) values (?, ?)";
                 finalConnection.setAutoCommit(false);
                 PreparedStatement ps = finalConnection.prepareStatement(query);
-                for (long i = timestamp; i < 6000; i++) {
+                for (long i = timestamp; i < 6000 + timestamp; i++) {
                   double value = newMin + random.nextDouble() * (newMax - newMin);
                   ps.setLong(1, i);
                   ps.setDouble(2, value);
@@ -147,7 +147,7 @@ public class DatabaseGenerator {
                 String query = "insert into " + tableName + " (stamp, value) values (?, ?)";
                 finalConnection.setAutoCommit(false);
                 PreparedStatement ps = finalConnection.prepareStatement(query);
-                for (long i = timestamp; i < 6000; i++) {
+                for (long i = timestamp; i < 6000 + timestamp; i++) {
                   int value;
                   if (random.nextDouble() <= 0.01) {
                     value = 0;
@@ -171,7 +171,7 @@ public class DatabaseGenerator {
                 String query = "insert into " + tableName + " (stamp, value) values (?, ?)";
                 finalConnection.setAutoCommit(false);
                 PreparedStatement ps = finalConnection.prepareStatement(query);
-                for (long i = timestamp; i < 6000; i++) {
+                for (long i = timestamp; i < 6000 + timestamp; i++) {
                   int value;
                   if (random.nextDouble() <= 0.01 / windowSize * max) {
                     value = 0;
