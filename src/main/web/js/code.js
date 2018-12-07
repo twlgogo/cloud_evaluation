@@ -379,7 +379,7 @@ function fillInfoPanelWithRNode(rNode) {
           await refreshRenderPanel();
           cy.$(`#${nodeId(node.id)}`).emit("click");
         } catch (e) {
-          // TODO pop error
+          alert(e)
         }
       }
     }
