@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class AHPMatrixGenerator {
   public static AHPRequest []ahpRequests;
-  public static double []theas = {0.1,0.3,0.5,0.7,0.9,1.3};
+  public static double []theas = {0.1,0.3,0.5,0.7,0.9,1.0,1.3};
 
   public AHPMatrixGenerator(int size, double initMatrix[]) {
     ahpRequests = new AHPRequest[size];
@@ -50,7 +50,11 @@ public class AHPMatrixGenerator {
 
   public void printMatrix() {
     for (int i = 0; i < ahpRequests.length; i++) {
-      System.out.println(ahpRequests[i].getList());
+      List<Double> list = ahpRequests[i].getList();
+      for (double d:list) {
+        System.out.print((int)Math.ceil(d)+"\t");
+      }
+      System.out.println();
     }
   }
 

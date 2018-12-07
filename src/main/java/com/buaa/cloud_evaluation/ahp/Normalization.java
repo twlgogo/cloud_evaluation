@@ -10,6 +10,7 @@ public class Normalization {
     normal(nums);
     System.out.println(Arrays.toString(nums));
   }
+
   public static void normal(double[] rawData) {
     int n = rawData.length;
     double sum = getSum(rawData);
