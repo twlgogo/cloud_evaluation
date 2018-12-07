@@ -174,9 +174,9 @@ public class DatabaseGenerator {
                 for (long i = timestamp; i < 6000 + timestamp; i++) {
                   int value;
                   if (random.nextDouble() <= 0.01 / windowSize * max) {
-                    value = 0;
-                  } else {
                     value = 1;
+                  } else {
+                    value = 0;
                   }
                   ps.setLong(1, i);
                   ps.setInt(2, value);
