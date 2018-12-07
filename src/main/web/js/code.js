@@ -4,6 +4,37 @@ const TYPE_CRITERIA = 1;
 const INVALID_PARENT = -1;
 const INVALID_SOURCE = -1;
 
+const CRITERIAS = new Map()
+  .set(1, '电能')
+  .set(2, 'UPS可用时间')
+  .set(3, '电流')
+  .set(4, '电压')
+  .set(5, '环境温度')
+  .set(6, '湿度')
+  .set(7, '丢包个数')
+  .set(8, '错误包数量')
+  .set(9, '网段划分')
+  .set(10, '传输速率')
+  .set(11, 'User CPU利用率')
+  .set(12, 'CPU温度')
+  .set(13, '内存利用率')
+  .set(14, '磁盘IO速率')
+  .set(15, 'IO占CPU比率')
+  .set(16, '虚拟机User CPU利用率')
+  .set(17, '物理内存利用率')
+  .set(18, '视频监控设备状态')
+  .set(19, '视频监控覆盖率')
+  .set(20, '异常登录用户')
+  .set(21, 'SYN_RECV状态链接')
+  .set(22, '备份完整率')
+  .set(23, '数据库密码')
+  .set(24, '登录密码')
+  .set(25, 'IT设备冗余量')
+  .set(26, '双路市电接入监控')
+  .set(27, '7日日志完整性')
+  .set(28, '标准化设备比率')
+  .set(29, '标准虚拟机性能')
+  .set(30, 'PUE值')
 
 const cy = installCytoscape();
 
@@ -533,6 +564,11 @@ function setupInfoPanel() {
   }
 }
 
+function padNumber(num, size) {
+  const s = "000000000" + num;
+  return s.substr(s.length - size);
+}
+
 async function fillNodeValue (rNode) {
   if (rNode.node.type === TYPE_CRITERIA) {
     rNode.value = await pullItemValue(rNode.node.source, time + 1541491200);
@@ -547,6 +583,13 @@ async function fillNodeValue (rNode) {
         rNode.value = -1;
       } else {
         rNode.value += child.levelPercent * child.value;
+      }
+
+      // Catch an error
+      if (child.node.type === TYPE_CRITERIA && child.value <= 0.001) {
+        const date = new Date((time + 1541491200) * 1000);
+        const name = CRITERIAS.get(child.node.source);
+        log(`${date.getFullYear()}-${padNumber(date.getMonth(), 2)}-${padNumber(date.getDate(), 2)} ${padNumber(date.getHours(), 2)}:${padNumber(date.getMinutes(), 2)}:${padNumber(date.getSeconds(), 2)} : ${name} 异常`)
       }
     }
     if (rNode.value <= -0.999) {
