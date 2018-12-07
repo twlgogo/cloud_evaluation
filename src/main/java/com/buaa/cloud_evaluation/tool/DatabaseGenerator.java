@@ -175,6 +175,6 @@ public class DatabaseGenerator {
   }
 
   private static void insertUserItem(Statement statement, String tableName, String userName, String passWord) throws SQLException {
-    statement.executeUpdate("insert into " + tableName + " (user_name, pass_word) values (" + userName + ", " + passWord + ")");
+    statement.executeUpdate("insert into " + tableName + " (user_name, pass_word) values ('" + userName + "', '" + passWord + "')");
   }
 }
