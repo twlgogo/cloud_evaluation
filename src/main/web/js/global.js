@@ -43,6 +43,7 @@ async function onPause () {
 function onStop() {
   clearChart();
   clearTotalValue();
+  clearLog();
 
   if (timeoutID != null) {
     window.clearTimeout(timeoutID);
