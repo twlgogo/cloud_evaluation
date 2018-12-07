@@ -543,7 +543,14 @@ async function fillNodeValue (rNode) {
     for (let i = 0; i < rNode.children.length; i++) {
       const child = rNode.children[i];
       await fillNodeValue(child);
-      rNode.value += child.levelPercent * child.value;
+      if (child.value <= 0.001 || rNode.value <= -0.999) {
+        rNode.value = -1;
+      } else {
+        rNode.value += child.levelPercent * child.value;
+      }
+    }
+    if (rNode.value <= -0.999) {
+      rNode.value = 0;
     }
   }
 }
