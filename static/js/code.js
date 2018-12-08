@@ -46,7 +46,7 @@ let globalTree;
 
 
 function url(path) {
-  return "http://127.0.0.1:8080" + path;
+  return path;
 }
 
 function reciprocal(num) {
