@@ -437,7 +437,8 @@ function createMatrixDiv(n, list) {
 
   const div = document.createElement("div");
   div.className = 'matrix-container';
-  div.style['grid-template-columns'] = 'auto '.repeat(n).slice(0, -1);
+  const bili = 100 / n;
+  div.style['grid-template-columns'] = `${bili}% `.repeat(n).slice(0, -1);
 
   const texts = {};
 
