@@ -271,6 +271,12 @@ function installCytoscape() {
           'line-color': '#9dbaea',
           'target-arrow-color': '#9dbaea'
         }
+      },
+      {
+        selector: '.error',
+        style: {
+          'background-color': '#ff0000'
+        }
       }
     ]
   });
@@ -594,7 +600,10 @@ async function fillNodeValue (rNode) {
       if (child.node.type === TYPE_CRITERIA && child.value <= 0.001) {
         const date = new Date((time + 1541491200) * 1000);
         const name = CRITERIAS.get(child.node.source);
-        log(`${date.getFullYear()}-${padNumber(date.getMonth(), 2)}-${padNumber(date.getDate(), 2)} ${padNumber(date.getHours(), 2)}:${padNumber(date.getMinutes(), 2)}:${padNumber(date.getSeconds(), 2)} : ${name} 异常`)
+        log(`${date.getFullYear()}-${padNumber(date.getMonth(), 2)}-${padNumber(date.getDate(), 2)} ${padNumber(date.getHours(), 2)}:${padNumber(date.getMinutes(), 2)}:${padNumber(date.getSeconds(), 2)} : ${name} 异常`);
+        cy.$(`#${nodeId(child.node.id)}`).addClass('error');
+      } else {
+        cy.$(`#${nodeId(child.node.id)}`).removeClass('error');
       }
     }
     if (rNode.value <= -0.999) {
