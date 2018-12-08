@@ -17,18 +17,17 @@
 </body>
 <script>
   const submit = document.getElementById('submit')
-  submit.onclick = () => {
+  submit.onclick = async () => {
     const usename = document.getElementById('username').value
     const password = document.getElementById('password').value
-    fetch(`/login?usename=${usename}&password=${password}`)
-      .then(async data => {
-        if ((await data.json()).success) {
-          window.open("/index.html","_self")
-        } else {
-          alert(`登录失败`)
-        }
-      })
-      .catch(error => alert(`登录失败`))
+
+    data = await fetch(`/login?usename=${usename}&password=${password}`)
+    json = await data.json()
+    if (json.success) {
+      window.open("/index.html","_self")
+    } else {
+      alert(`登录失败`)
+    }
   }
 </script>
 </html>
