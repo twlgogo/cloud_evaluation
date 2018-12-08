@@ -64,4 +64,14 @@ public class DbQuery {
       return 0;
     }
   }
+
+  public static boolean verifyUser(String username, String password) {
+    try (Statement statement = connection.createStatement()) {
+      ResultSet rs = statement.executeQuery("select * from user_table"
+          + " where user_name = '" + username + "' and pass_word = '" + password + "'");
+      return rs.next();
+    } catch (SQLException e) {
+      return false;
+    }
+  }
 }

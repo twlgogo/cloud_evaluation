@@ -1,6 +1,7 @@
 package com.buaa.cloud_evaluation.controller;
 
 import com.buaa.cloud_evaluation.ahp.AHPCacluator;
+import com.buaa.cloud_evaluation.item.DbQuery;
 import com.buaa.cloud_evaluation.item.ItemScoreGetter;
 import com.buaa.cloud_evaluation.meanshift.Meanshift;
 import com.buaa.cloud_evaluation.model.AHPRequest;
@@ -390,5 +391,17 @@ public class ApiController {
       int timestamp
   ) {
     return ApiResultModule.success(itemScoreGetter.getScore(itemId, timestamp));
+  }
+
+  @RequestMapping("/login")
+  public ApiResultModule<Void> removeNodeValue(
+      String usename,
+      String password
+  ) {
+    if (DbQuery.verifyUser(usename, password)) {
+      return ApiResultModule.success(null);
+    } else {
+      return ApiResultModule.error("error");
+    }
   }
 }
