@@ -605,7 +605,7 @@ async function fillNodeValue (rNode) {
         child.node.error = true
         const date = new Date((time + 1541491200) * 1000);
         const name = CRITERIAS.get(child.node.source);
-        log(`${date.getFullYear()}-${padNumber(date.getMonth(), 2)}-${padNumber(date.getDate(), 2)} ${padNumber(date.getHours(), 2)}:${padNumber(date.getMinutes(), 2)}:${padNumber(date.getSeconds(), 2)} : ${name} 异常`);
+        log(`${date.getFullYear()}-${padNumber(date.getMonth() + 1, 2)}-${padNumber(date.getDate(), 2)} ${padNumber(date.getHours(), 2)}:${padNumber(date.getMinutes(), 2)}:${padNumber(date.getSeconds(), 2)} : ${name} 异常`);
         cy.$(`#${nodeId(child.node.id)}`).addClass('error');
       } else {
         child.node.error = false
