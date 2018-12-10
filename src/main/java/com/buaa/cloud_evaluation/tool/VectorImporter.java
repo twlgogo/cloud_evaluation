@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
@@ -24,6 +25,8 @@ public class VectorImporter {
   public static void main(String[] args) throws IOException {
     importVectors(
         new File("vectors.txt"),
+        1500,
+        new File("resample.txt"),
         new File("ahp_results.txt"),
         new File("meanshift.txt"),
         "meanshift_group_%d.txt",
@@ -73,6 +76,27 @@ public class VectorImporter {
     }
 
     return requests;
+  }
+
+  private static void writeAHPRequestsFile(File file, List<AHPRequest> requests) throws IOException {
+    try (Writer writer = new FileWriter(file)) {
+      for (AHPRequest request : requests) {
+        writeDoubleList(writer, request.getList());
+        writer.write("\n");
+      }
+    }
+  }
+
+  private static List<AHPRequest> resample(List<AHPRequest> requests, int count) {
+    Random random = new Random();
+
+    List<AHPRequest> result = new ArrayList<>(count);
+
+    for (int i = 0; i < count; i++) {
+      result.add(requests.get(random.nextInt(requests.size())));
+    }
+
+    return result;
   }
 
   private static void writeAHPResults(File file, List<AHPResult> results) throws IOException {
@@ -206,6 +230,8 @@ public class VectorImporter {
 
   private static void importVectors(
       File vectorsFile,
+      int resampleCount,
+      File resampleFile,
       File ahpResultsFile,
       File meanshiftFile,
       String meanshiftGroupFilename,
@@ -215,6 +241,8 @@ public class VectorImporter {
       File meanshiftFinalResultFile
   ) throws IOException {
     List<AHPRequest> requests = readVectorsFile(vectorsFile);
+    requests = resample(requests, resampleCount);
+    writeAHPRequestsFile(resampleFile, requests);
 
     List<AHPResult> results = requests.stream().map(AHPCacluator::getAHPResult).collect(Collectors.toList());
     writeAHPResults(ahpResultsFile, results);
