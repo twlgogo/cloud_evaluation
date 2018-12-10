@@ -190,6 +190,10 @@ function addNode(cy, rNode) {
     data: { id: nodeId(node.id), node: node, name: node.name, percent: toPercent(rNode.globalPercent), value: Math.round(rNode.value * 100) / 100 },
   });
 
+  if (node.error) {
+    cy.$(`#${nodeId(node.id)}`).addClass('error');
+  }
+
   cy.$(`#${nodeId(node.id)}`).on("click", function() {
     showInfoPanel();
     fillInfoPanelWithRNode(rNode)
@@ -598,11 +602,13 @@ async function fillNodeValue (rNode) {
 
       // Catch an error
       if (child.node.type === TYPE_CRITERIA && child.value <= 0.001) {
+        child.node.error = true
         const date = new Date((time + 1541491200) * 1000);
         const name = CRITERIAS.get(child.node.source);
         log(`${date.getFullYear()}-${padNumber(date.getMonth(), 2)}-${padNumber(date.getDate(), 2)} ${padNumber(date.getHours(), 2)}:${padNumber(date.getMinutes(), 2)}:${padNumber(date.getSeconds(), 2)} : ${name} 异常`);
         cy.$(`#${nodeId(child.node.id)}`).addClass('error');
       } else {
+        child.node.error = false
         cy.$(`#${nodeId(child.node.id)}`).removeClass('error');
       }
     }
