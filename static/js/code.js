@@ -584,6 +584,17 @@ function padNumber(num, size) {
   return s.substr(s.length - size);
 }
 
+const lastState = new Map()
+
+function findNodeById(list, id) {
+  for (let i = 0; i < list.length; i++) {
+    if (list[i].node.id === id) {
+      return list[i];
+    }
+  }
+  return null;
+}
+
 async function fillNodeValue (rNode) {
   if (rNode.node.type === TYPE_CRITERIA) {
     rNode.value = await pullItemValue(rNode.node.source, time + 1541491200);
@@ -599,9 +610,29 @@ async function fillNodeValue (rNode) {
       } else {
         rNode.value += child.levelPercent * child.value;
       }
+    }
+    if (rNode.value <= -0.999) {
+      rNode.value = 0;
+    }
 
+    // Clear last error if it's not error anymore
+    if (rNode.node.id !== 1 && rNode.node.type === TYPE_ELEMENT) {
+      const lastErrorId = lastState.get(rNode.node.id)
+      if (lastErrorId != null) {
+        if (findNodeById(rNode.children, lastErrorId).value > 0.001) {
+          console.log("Clear " + rNode.node.id);
+          lastState.set(rNode.node.id, null)
+        }
+      }
+    }
+
+    let currentError = lastState.get(rNode.node.id)
+
+    for (let i = 0; i < rNode.children.length; i++) {
+      const child = rNode.children[i];
       // Catch an error
-      if (child.node.type === TYPE_CRITERIA && child.value <= 0.001) {
+      if ((currentError == null || currentError === child.node.id)&& child.node.type === TYPE_CRITERIA && child.value <= 0.001) {
+        currentError = child.node.id
         child.node.error = true
         const date = new Date((time + 1541491200) * 1000);
         const name = CRITERIAS.get(child.node.source);
@@ -612,10 +643,14 @@ async function fillNodeValue (rNode) {
         cy.$(`#${nodeId(child.node.id)}`).removeClass('error');
       }
     }
-    if (rNode.value <= -0.999) {
-      rNode.value = 0;
-    }
+
+    lastState.set(rNode.node.id, currentError)
   }
+}
+
+async function clearRender() {
+  lastState.clear()
+  await refreshRenderPanel()
 }
 
 async function renderTick() {

@@ -40,7 +40,8 @@ async function onPause () {
   }
 }
 
-function onStop() {
+async function onStop() {
+  await clearRender();
   clearChart();
   clearTotalValue();
   clearLog();
