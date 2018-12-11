@@ -10,18 +10,18 @@
   <script src="https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.2.2/cytoscape-dagre.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/cytoscape-cxtmenu@3.0.2/cytoscape-cxtmenu.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/cytoscape-node-html-label@1.1.2/dist/cytoscape-node-html-label.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.1.0/echarts.js"></script>
 </head>
 <body>
 <div id="render-panel"></div>
 <div id="vertical-line"></div>
 <div id="statistics-panel">
   <div style="height: 5%; display: table; margin: auto auto">总分：<span id="total-score">NaN</span></div>
-  <div id="chart-container" style="width: auto; height: 95%; display: grid; grid-template-columns: 50% 50%;">
-    <canvas id="chart1"></canvas>
-    <canvas id="chart2"></canvas>
-    <canvas id="chart3"></canvas>
-    <canvas id="chart4"></canvas>
+  <div id="chart-container" style="width: auto; height: 95%;">
+    <div id="chart1" style="width: 50%; height: 50%; float: left;"></div>
+    <div id="chart2" style="width: 50%; height: 50%; float: left;"></div>
+    <div id="chart3" style="width: 50%; height: 50%; float: left;"></div>
+    <div id="chart4" style="width: 50%; height: 50%; float: left;"></div>
   </div>
 </div>
 <div id="horizontal-line"></div>

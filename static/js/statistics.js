@@ -1,7 +1,7 @@
-const ctx1 = document.getElementById('chart1').getContext('2d');
-const ctx2 = document.getElementById('chart2').getContext('2d');
-const ctx3 = document.getElementById('chart3').getContext('2d');
-const ctx4 = document.getElementById('chart4').getContext('2d');
+const ctx1 = document.getElementById('chart1');
+const ctx2 = document.getElementById('chart2');
+const ctx3 = document.getElementById('chart3');
+const ctx4 = document.getElementById('chart4');
 
 const data1 = []
 const data2 = []
@@ -13,39 +13,30 @@ const labels = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 // 1541491200
 
 function drawChart (ctx, name, data) {
-  new Chart(ctx, {
-    // The type of chart we want to create
-    type: 'line',
+  const myChart = echarts.init(ctx);
 
-    // The data for our dataset
-    data: {
-      labels: labels,
-      datasets: [{
-        label: name,
-        borderColor: 'rgb(255, 99, 132)',
-        data: data,
-      }]
+  const option = {
+    title: {
+      text: name,
+      x:'center',
+      y:'top',
     },
+    xAxis: {
+      type: 'category',
+      data: labels
+    },
+    yAxis: {
+      type: 'value',
+      min:0.0,
+      max:1.0
+    },
+    series: [{
+      data: data,
+      type: 'line'
+    }]
+  }
 
-    // Configuration options go here
-    options: {
-      animation: false,
-      responsive: false,
-      elements: {
-        line: {
-          tension: 0, // disables bezier curves
-        }
-      },
-      scales: {
-        yAxes: [{
-          ticks: {
-            min: 0,
-            max: 1
-          }
-        }]
-      }
-    }
-  });
+  myChart.setOption(option, true);
 }
 
 function clearArray(array) {
